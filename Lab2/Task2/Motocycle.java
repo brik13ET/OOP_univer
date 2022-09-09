@@ -1,16 +1,15 @@
 import java.time.Instant;
-import java.util.Date;
 import java.util.Arrays;
 
 public class Motocycle {
 
     String Manufacture;
-    Date lastEdit;
+    long lastEdit;
     Model models;
 
     public void SetManufacture(String manuf)
 	{
-        lastEdit = Date.from(Instant.now());
+        lastEdit = Instant.toEpochMilli();
 		String Manufacture = manuf;
 	}
 	
