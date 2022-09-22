@@ -1,9 +1,19 @@
+package Vehicle;
+
+
+
 import java.util.Arrays;
 
 public class Automobile{
 	String Manufacature;
 	Model models[]; //10
 
+        public Automobile(String manuf)
+        {
+            Manufacature = manuf;
+            models = new Model[0];
+        }
+        
 	public void SetManufacture(String manuf)
 	{
 		String Manufacture = manuf;
