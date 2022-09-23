@@ -8,11 +8,20 @@ public class Automobile{
 	String Manufacature;
 	Model models[]; //10
 
-        public Automobile(String manuf)
-        {
-            Manufacature = manuf;
-            models = new Model[0];
-        }
+	public Automobile(String manuf)
+	{
+		Manufacature = manuf;
+		models = new Model[0];
+	}
+	public Automobile(String manuf, int size)
+	{
+		Manufacature = manuf;
+		models = new Model[size];
+		for (int i = 0; i < size; i++)
+		{
+			models[i] = new Model("Model " + i, i*15000+10000);
+		}
+	}
         
 	public void SetManufacture(String manuf)
 	{
@@ -40,33 +49,50 @@ public class Automobile{
 	{
 		models[index].Title = Name;
 	}
-
-	public void SetModelCost(int index, int cost)
+	public void SetModelTitleByName(String oldName,String newName)
 	{
-		models[index].Cost = cost;
+		boolean found = false;
+		int i = 0;
+		while(found != true && i < models.length)
+		{
+			if(models[i].Title == oldName)
+			{
+				found = true;
+				models[i].Title = newName;
+			}
+
+		}
 	}
-
-	public String GetModelTitle(int index)
+	public String[] GetModelsTitles()
 	{
-		return models[index].Title;
-	}
-
-	public int GetModelCost(int index)
-	{
-		return models[index].Cost;
-	}
-
-	public int[] GetModelsCost()
-	{
-		int[] ret = new int[models.length];
+		String[] ret = new String[models.length];
 		for (int i = 0; i < models.length; i++)
 		{
-			ret[i]= models[i].Cost;
+			ret[i]= models[i].Title;
 		}
 		return ret;
 	}
+	public int GetCostByName(String Name)
+	{
+		boolean found = false;
+		int i = 0;
+		while (found != true && i < models.length)
+		{
+			if (models[i].Title == Name)
+			{
+				found = true;
+				return models[i].Cost;
 
-	public void ChangeCostOfModel(String model, int cost)
+			}
+
+		}
+		if (!found)
+		{
+			throw new RuntimeException("Model Name not found: " + Name);
+		}
+		else throw new RuntimeException("Unexpected Exit");
+	}
+	public void SetCostByName(String model, int cost)
 	{
 		boolean found = false;
 		int i = 0;
@@ -80,14 +106,21 @@ public class Automobile{
 
 		}
 	}
-
+	public int[] GetModelsCost()
+	{
+		int[] ret = new int[models.length];
+		for (int i = 0; i < models.length; i++)
+		{
+			ret[i]= models[i].Cost;
+		}
+		return ret;
+	}
 	public void AddModel(String Name, int cost)
 	{
 		Model[] newM = Arrays.copyOf(models, models.length+1);
 		newM[models.length] = new Model(Name, cost);
 		models = newM;
 	}
-
 	public void DelModel(String Name)
 	{
 		Model[] newM = new Model[models.length-1];
@@ -115,4 +148,32 @@ public class Automobile{
 			models = newM;
 		}
 	}
+
+	public void SetModelCost(int index, int cost)
+	{
+		models[index].Cost = cost;
+	}
+
+	public String GetModelTitle(int index)
+	{
+		return models[index].Title;
+	}
+
+	public int GetModelCost(int index)
+	{
+		return models[index].Cost;
+	}
+
+	public int GetModelsCount()
+	{
+		return models.length;
+	}
+
+
+
+
+
+
+
+
 }
