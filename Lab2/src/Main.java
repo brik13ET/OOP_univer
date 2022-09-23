@@ -1,19 +1,61 @@
 import Vehicle.*;
 
 
-
 class Main
 {
-    public static void main(String argv[])
+    public static void Test(IVehicle v) throws NoSuchModelNameException, DuplicateModelNameException, ModelPriceOutOfBoundsException
     {
-        Automobile a;
-        a = new Automobile("Manuf1");
-        for (int i = 0; i < 10; i++) {
-            a.AddModel("model "+i, (i+1)*10_000);
+        String n = v.getModelsTitle()[0];
+        //v.addModel(n, 0);
+        //v.addModel("EEEEEEE", -273);
+        //v.delModel(n+"xddd");
+        
+    }
+    public static void main(String argv[]) throws DuplicateModelNameException, NoSuchModelNameException
+    {
+        System.out.println("Motocycle");
+        Motocycle a;
+        
+        a = new Motocycle("Hurrington Motors",3);
+        a.addModel("Vega", 1337_42);
+        a.delModel("Model 1");
+        System.out.println("Task5");
+        
+        double avg = VehicleAnalyzer.doAvg(a);
+        System.out.println("avg: "+  avg);
+        VehicleAnalyzer.printPriceList(a);
+        
+        System.out.println("Automobile");
+        Automobile b;
+        b = new Automobile("Hyndai",5);
+        b.addModel("Solaris", 1_000_000);
+        b.delModel("Model 0");
+        System.out.println("Task5");
+        
+        double avg2 = VehicleAnalyzer.doAvg(b);
+        System.out.println("avg: "+  avg2);
+        VehicleAnalyzer.printPriceList(b);
+        
+        try
+        {
+            Test(a);
+        }catch(NoSuchModelNameException ex){
+            System.out.println(ex);
+        }catch(DuplicateModelNameException ex){
+            System.out.println(ex);
+        }catch(ModelPriceOutOfBoundsException ex){
+            System.out.println(ex);
         }
-        int[] mc = a.GetModelsCost();
-        for (int i = 0; i < mc.length; i++) {
-            System.out.println(mc[i]);
+        try
+        {
+            Test(b);
+        }catch(NoSuchModelNameException ex){
+            System.out.println(ex);
+        }catch(DuplicateModelNameException ex){
+            System.out.println(ex);
+        }catch(ModelPriceOutOfBoundsException ex){
+            System.out.println(ex);
         }
+                
     }
 }
