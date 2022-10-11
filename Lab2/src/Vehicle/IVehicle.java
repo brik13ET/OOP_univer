@@ -10,13 +10,21 @@ package Vehicle;
  */
 public interface IVehicle {
     public String   getManufacture();
-    public String[] getModelsTitle();
-    public int[]    getModelsCost();
-    public int      getModelCostByName(String model) throws NoSuchModelNameException;
-    public int      getModelCount();
     public void     setManufacture(String manuf);
-    public void     setModelTitleByName(String oldName, String newName) throws NoSuchModelNameException;
-    public void     setModelCostByName(String model, int cost) throws NoSuchModelNameException,ModelPriceOutOfBoundsException;
-    public void     addModel(String title, int cost) throws DuplicateModelNameException,ModelPriceOutOfBoundsException;
-    public void     delModel(String title) throws NoSuchModelNameException;
+    
+    public void     setModelTitle(String oldName, String newName)
+            throws DuplicateModelNameException, NoSuchModelNameException;
+    public String[] getModelsTitle();
+    
+    public int[]    getModelsCost();
+    public int      getModelCostByName(String model)
+            throws NoSuchModelNameException;
+    public void     setModelCostByName(String model, int cost)
+            throws NoSuchModelNameException;
+    
+    public int      getModelCount();
+    public void     addModel(String title, int cost)
+            throws DuplicateModelNameException;
+    public void     delModel(String title)
+            throws NoSuchModelNameException;
 }

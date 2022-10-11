@@ -23,7 +23,7 @@ public class DuplicateModelNameException extends Exception {
      *
      * @param msg the detail message.
      */
-    public DuplicateModelNameException(String msg) {
-        super(msg);
+    public DuplicateModelNameException(String modelName) {
+        super("Model name duplicating: " + modelName);
     }
 }

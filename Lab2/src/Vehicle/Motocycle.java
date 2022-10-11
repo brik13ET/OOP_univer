@@ -1,9 +1,6 @@
 package Vehicle;
 
 import java.time.Instant;
-// NetBeans moment
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public final class Motocycle implements IVehicle{
 
@@ -17,12 +14,28 @@ public final class Motocycle implements IVehicle{
         Manufacture = manuf;
         head.next = head;
         head.prev = head;
-        for (int i = 0; i < size; i++) {
-            try {
+        try {
+            for (int i = 0; i < size; i++)
+            {
                 this.addModel("Model "+i, i*25_000 + 10_000);
-            } catch (DuplicateModelNameException | ModelPriceOutOfBoundsException ex) {
-                Logger.getLogger(Motocycle.class.getName()).log(Level.SEVERE, null, ex);
             }
+        } catch (DuplicateModelNameException ex) // impossible exception
+        {
+            ex.printStackTrace(System.out);
+        }
+    }
+
+    private class Model
+    {
+        public String Title;
+        public int Cost;
+        Model next;
+        Model prev;
+
+        public Model(String title, int cost)
+        {
+            Title = title;
+            Cost = cost;
         }
     }
     
@@ -40,38 +53,43 @@ public final class Motocycle implements IVehicle{
     }
 
     @Override
-    public void setModelTitleByName(String oldName, String newName) throws NoSuchModelNameException {
-        
+    public void setModelTitle(String oldName, String newName)
+            throws
+                NoSuchModelNameException,
+                DuplicateModelNameException
+            
+    {
         lastEdit = Instant.now().getEpochSecond();
-        boolean found = false;
         Model node = head.next;
-        while(found != true && node != head)
+        
+        while(!node.Title.equals(newName) && node != head)
         {
-            found = node.Title == null ? 
-                    oldName == null : 
-                    node.Title.equals(oldName);
-            if (!found)
-                node = node.next;
+            node = node.next;
         }
-        if (!found)
-                throw new NoSuchModelNameException("Model not found: "+ oldName);
-
-        node.prev.next.Title = newName;
+        if (node != head)
+                throw new DuplicateModelNameException(newName);
+        
+        node = head.next;
+        while(!node.Title.equals(oldName) && node != head)
+        {
+            node = node.next;
+        }
+        if (node == head)
+                throw new NoSuchModelNameException(oldName);
+        
+        node.Title = newName;
     }
 
     @Override
-    public int getModelCostByName(String model) throws NoSuchModelNameException {
-        boolean found = false;
+    public int getModelCostByName(String model) throws NoSuchModelNameException
+    {
         Model node = head.next;
-        while(found != true && node != head)
+        while(!node.Title.equals(model) && node != head)
         {
-            found = node.Title == null ? model == null : node.Title.equals(model);
-            if ( !found )
-                node = node.next;
-            
+            node = node.next;
         }
-        if (!found)
-            throw new NoSuchModelNameException("Model \""+model+"\" not found.");
+        if (node == head)
+            throw new NoSuchModelNameException(model);
         else
             return node.Cost;
     }
@@ -80,16 +98,13 @@ public final class Motocycle implements IVehicle{
     public void setModelCostByName(String model, int cost) throws NoSuchModelNameException, ModelPriceOutOfBoundsException {
         
         lastEdit = Instant.now().getEpochSecond();
-        boolean found = false;
         Model node = head.next;
-        while(found != true && node != head)
+        while(!node.Title.equals(model) && node != head)
         {
-            found = node.Title == null ? model == null : node.Title.equals(model);
-            if (!found)
-                    node = node.next;
+            node = node.next;
         }
-        if (!found)
-            throw new NoSuchModelNameException("Model \""+model+"\" not found.");
+        if (node == head)
+            throw new NoSuchModelNameException(model);
         node.Cost = cost;
     }
 
@@ -108,41 +123,29 @@ public final class Motocycle implements IVehicle{
     }
 
     @Override
-    public void addModel(String title, int cost) throws DuplicateModelNameException, ModelPriceOutOfBoundsException {
+    public void addModel(String title, int cost)
+            throws
+                DuplicateModelNameException
+    {
         
         if (cost < 0)
-            throw new ModelPriceOutOfBoundsException("Cost < 0");
-        boolean hasTitle = false;
+            throw new ModelPriceOutOfBoundsException("cost < 0 : not in bounds");
         Model node = head.next;
-        while ( !hasTitle && node != head)
+        while ( !node.Title.equals(title) && node != head)
         {
-            hasTitle = (node.Title == null ? title == null : node.Title.equals(title));
             node = node.next;
         }
-        if (hasTitle)
+        if (node != head)
             throw new DuplicateModelNameException("Motocycle class has same model: " + title);
+        
         lastEdit = Instant.now().getEpochSecond();
         Model m = new Model(title, cost);
-        m.prev = head;
-        m.next = head.next;
-        head.next = m;
-        m.next.prev = m;
+        m.prev = head.prev;
+        m.next = head;
+        head.prev = m;
+        m.prev.next = m;
     }
 
-    public class Model
-    {
-        public String Title;
-        public int Cost;
-        Model next;
-        Model prev;
-
-        public Model(String title, int cost)
-        {
-            Title = title;
-            Cost = cost;
-        }
-    }
- 
     @Override
     public int[] getModelsCost()
     {
@@ -161,19 +164,13 @@ public final class Motocycle implements IVehicle{
     public int getCostOfModelByName(String model) throws NoSuchModelNameException
     {
         lastEdit = Instant.now().getEpochSecond();
-        boolean found = false;
         Model node = head.next;
-        while(found != true && node != head)
+        while(!node.Title.equals(model)&& node != head)
         {
-            found = node.Title == null ? 
-                    model == null : 
-                    node.Title.equals(model);
-            if (!found)
-                node = node.next;
+            node = node.next;
         }
-        if (!found)
-            throw new NoSuchModelNameException(
-                    "Название модели \""+model+"\" не найдено.");
+        if (node == head)
+            throw new NoSuchModelNameException(model);
         return node.Cost;
     }
     
@@ -181,10 +178,13 @@ public final class Motocycle implements IVehicle{
     public String[] getModelsTitle()
     {
         String[] ret = new String[getModelCount()];
-        Model node = head.prev;
-        for (int i = 0; i < ret.length && node != head; i++) {
+        Model node = head.next;
+        int i = 0;
+        while(node != head)
+        {
             ret[i] = node.Title;
-            node = node.prev;
+            i ++;
+            node = node.next;
         }
         return ret;
     }
@@ -193,26 +193,21 @@ public final class Motocycle implements IVehicle{
     public void delModel(String Name) throws NoSuchModelNameException
     {
         lastEdit = Instant.now().getEpochSecond();
-        boolean found = false;
         Model node = head.next;
-        while(found == false && node != head)
+        while(!node.Title.equals(Name) && node != head)
         {
-            found = node.Title == null ? Name == null : node.Title.equals(Name);
-            if (!found)
-                node = node.next;
+            node = node.next;
         }
-        if(found)
+        if(node != head)
         {
             Model n = node;
             n.prev.next = n.next;
             n.next.prev = n.prev;
         }
         else
-            throw new NoSuchModelNameException(
-                    "Название модели \""+Name+"\" не найдено.");
+            throw new NoSuchModelNameException(Name);
             
     }
-
     
     public long getLastEdit()
     {

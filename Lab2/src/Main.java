@@ -1,9 +1,12 @@
 import Vehicle.*;
 
-
 class Main
 {
-    public static void Test(IVehicle v) throws NoSuchModelNameException, DuplicateModelNameException, ModelPriceOutOfBoundsException
+    public static void Test(IVehicle v) 
+            throws 
+                DuplicateModelNameException, 
+                NoSuchModelNameException,
+                ModelPriceOutOfBoundsException
     {
         String n = v.getModelsTitle()[0];
         //v.addModel(n, 0);
@@ -11,51 +14,44 @@ class Main
         //v.delModel(n+"xddd");
         
     }
-    public static void main(String argv[]) throws DuplicateModelNameException, NoSuchModelNameException
+    public static void main(String argv[])
+            throws 
+                DuplicateModelNameException, 
+                NoSuchModelNameException,
+                ModelPriceOutOfBoundsException
     {
-        System.out.println("Motocycle");
-        Motocycle a;
+        Motocycle a = new Motocycle("Hurrington Motors",3);
+        Automobile b = new Automobile("Hyndai",5);
         
-        a = new Motocycle("Hurrington Motors",3);
-        a.addModel("Vega", 1337_42);
-        a.delModel("Model 1");
-        System.out.println("Task5");
+        IVehicle v = b;
         
-        double avg = VehicleAnalyzer.doAvg(a);
-        System.out.println("avg: "+  avg);
-        VehicleAnalyzer.printPriceList(a);
+        v.addModel("Vega", 1337_420);
+        v.delModel("Model 1");
         
-        System.out.println("Automobile");
-        Automobile b;
-        b = new Automobile("Hyndai",5);
-        b.addModel("Solaris", 1_000_000);
-        b.delModel("Model 0");
-        System.out.println("Task5");
+        System.out.println(v.getManufacture());
+        v.setManufacture("EEEEEEEEEEEEEEEEEEEE");
+        System.out.println(v.getManufacture());
         
-        double avg2 = VehicleAnalyzer.doAvg(b);
-        System.out.println("avg: "+  avg2);
-        VehicleAnalyzer.printPriceList(b);
+        v.setModelTitle("Model 0", "Begginer");
+        VehicleAnalyzer.printPriceList(v);
+        
+        System.out.println("avg: "+  VehicleAnalyzer.doAvg(v));
+        v.setModelCostByName("Begginer", 420_1337_00);
+        
+        System.out.println("cnt: " + v.getModelCount() );
+        
+        System.out.println("avg: "+  VehicleAnalyzer.doAvg(v));
+        v.setModelCostByName("Begginer", 420_1337_00);
         
         try
         {
-            Test(a);
-        }catch(NoSuchModelNameException ex){
-            System.out.println(ex);
-        }catch(DuplicateModelNameException ex){
-            System.out.println(ex);
-        }catch(ModelPriceOutOfBoundsException ex){
-            System.out.println(ex);
+            Test(v);
+        }catch(
+                NoSuchModelNameException | 
+                DuplicateModelNameException | 
+                ModelPriceOutOfBoundsException ex){
+            //System.out.println(ex);
+            ex.printStackTrace(System.err);
         }
-        try
-        {
-            Test(b);
-        }catch(NoSuchModelNameException ex){
-            System.out.println(ex);
-        }catch(DuplicateModelNameException ex){
-            System.out.println(ex);
-        }catch(ModelPriceOutOfBoundsException ex){
-            System.out.println(ex);
-        }
-                
     }
 }

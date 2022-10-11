@@ -1,6 +1,7 @@
 package Vehicle;
 
 import java.util.Arrays;
+import java.lang.System;
 
 public class Automobile implements IVehicle{
     private String Manufacature;
@@ -8,95 +9,15 @@ public class Automobile implements IVehicle{
 
     public Automobile(String manuf, int size)
     {
-            Manufacature = manuf;
-            models = new Model[size];
-            for (int i = 0; i < size; i++)
-            {
-                    models[i] = new Model("Model " + i, i*15000+10000);
-            }
-    }
-
-    public String getManufacture()
-    {
-            return Manufacature;
-    }
-    public void setManufacture(String manuf)
-    {
-            Manufacature = manuf;
-    }
-
-    @Override
-    public String[] getModelsTitle() {
-            String[] ret = new String[models.length];
-            for (int i = 0; i < models.length; i++)
-            {
-                    ret[i]= models[i].Title;
-            }
-            return ret;
-    }
-
-    @Override
-    public int getModelCostByName(String model) throws NoSuchModelNameException
-    {
-        boolean found = false;
-        int i = 0;
-        while (found == false && i < models.length)
+        Manufacature = manuf;
+        models = new Model[size];
+        for (int i = 0; i < size; i++)
         {
-            found = models[i].Title == null ? 
-                    model == null : 
-                    models[i].Title.equals(model);
-            if (!found)
-                i++;
-
-        }
-        if (!found || i > models.length)
-            throw new RuntimeException("Model Name not found: " + model);
-        else
-            return models[i].Cost;
-    }
-
-    @Override
-    public void setModelCostByName(String name, int cost) throws NoSuchModelNameException,ModelPriceOutOfBoundsException
-    {
-        boolean found = false;
-        int i = 0;
-        if (cost < 0)
-            throw new ModelPriceOutOfBoundsException("cost < 0.");
-        while(found != true && i < models.length)
-        {
-                if(models[i].Title == null ? name == null : models[i].Title.equals(name))
-                {
-                        found = true;
-                        models[i].Cost = (int)cost;
-                }
-
+            models[i] = new Model("Model " + i, i*15000+10000);
         }
     }
 
-    @Override
-    public void addModel(String title, int cost) throws DuplicateModelNameException, ModelPriceOutOfBoundsException
-    {
-        if (cost < 0)
-            throw new ModelPriceOutOfBoundsException("Cost < 0");
-        boolean hasSame = false;
-        int i = 0;
-        while (!hasSame && i < models.length)
-        {
-            hasSame = (models[i].Title == null ? title == null : models[i].Title.equals(title));
-            i ++;
-        }
-        if (hasSame)
-            throw new DuplicateModelNameException("Automobile class has same model: " + title);
-        models = Arrays.copyOf(models, models.length+1);
-        models[models.length - 1] = new Model(title, cost);
-    }
-
-    @Override
-    public int getModelCount() {
-        return models.length;
-    }
-
-    public class Model
+    private class Model
     {
             public String Title;
             public int Cost;
@@ -107,22 +28,96 @@ public class Automobile implements IVehicle{
                     Cost = cost;
             }
     }
+    
     @Override
-    public void setModelTitleByName(String oldName,String newName)
+    public String getManufacture()
     {
-            boolean found = false;
-            int i = 0;
-            while(found != true && i < models.length)
-            {
-                    if(models[i].Title == null ? oldName == null : models[i].Title.equals(oldName))
-                    {
-                            found = true;
-                            models[i].Title = newName;
-                    }
-
-            }
+            return Manufacature;
     }
-    public String[] getModelsTitles()
+    @Override
+    public void setManufacture(String manuf)
+    {
+            Manufacature = manuf;
+    }
+
+    @Override
+    public int getModelCostByName(String model)
+            throws NoSuchModelNameException
+    {
+        int i = 0;
+        while (i < models.length)
+            if (!(models[i].Title.equals(model)))
+                i++;
+        if (i >= models.length)
+            throw new NoSuchModelNameException(model);
+        else
+            return models[i].Cost;
+    }
+
+    @Override
+    public void setModelCostByName(String name, int cost)
+            throws
+                NoSuchModelNameException
+    {
+        int i = 0;
+        if (cost < 0)
+            throw new ModelPriceOutOfBoundsException("cost < 0 : not in bounds");
+        while(i < models.length)
+        {
+            if(models[i].Title.equals(name))
+            {
+                models[i].Cost = (int)cost;
+                break;
+            }
+            i++;
+        }
+    }
+
+    @Override
+    public void addModel(String title, int cost)
+            throws
+                DuplicateModelNameException
+    {
+        if (cost < 0)
+            throw new ModelPriceOutOfBoundsException("cost < 0 : not in bounds");
+        int i = 0;
+        while (i < models.length && !models[i].Title.equals(title))
+            i ++;
+        if (i < models.length)
+            throw new DuplicateModelNameException(title);
+        models = Arrays.copyOf(models, models.length+1);
+        models[models.length - 1] = new Model(title, cost);
+    }
+
+    @Override
+    public int getModelCount() {
+        return models.length;
+    }
+
+    @Override
+    public void setModelTitle(String oldName,String newName)
+            throws
+                DuplicateModelNameException,
+                NoSuchModelNameException
+    {
+        int i = 0;
+        if (newName == null)
+            throw new NullPointerException("Bad newName");
+        while(i < models.length && !models[i].equals(newName))
+            i++;
+        if (i != models.length)
+            throw new DuplicateModelNameException(newName);
+        
+        i = 0;
+        while(i < models.length && !models[i].Title.equals(oldName))
+            i++;
+        if (i == models.length)
+            throw new NoSuchModelNameException(oldName);
+        models[i].Title = newName;
+        
+    }
+    @Override
+    public String[] getModelsTitle()
     {
             String[] ret = new String[models.length];
             for (int i = 0; i < models.length; i++)
@@ -131,6 +126,7 @@ public class Automobile implements IVehicle{
             }
             return ret;
     }
+    
     @Override
     public int[] getModelsCost()
     {
@@ -142,21 +138,20 @@ public class Automobile implements IVehicle{
         return ret;
     }
     @Override
-    public void delModel(String Name) throws NoSuchModelNameException
+    public void delModel(String Name)
+            throws NoSuchModelNameException
     {
-        boolean found = false;
         int i = 0;
-        while(!found && i < models.length)
+        while(i < models.length && models[i].Title.equals(Name))
         {
-            found = (Name == null ? models[i].Title == null : Name.equals(models[i].Title));
-            if (!found)
                 i ++;
         }
-        if (!found)
-            throw new NoSuchModelNameException("Model Name not found: " + Name);
-        if (i != models.length - 1)
-            models[i] = models[models.length - 1];
-        models = Arrays.copyOf(models, models.length - 1);
+        if (i == models.length)
+            throw new NoSuchModelNameException(Name);
+        var tmp = models;
+        this.models = new Model[this.models.length - 1];
+        System.arraycopy(tmp, 0, this.models, 0, i);
+        System.arraycopy(tmp, i, this.models, i, tmp.length - i - 1);
     }
     
     public int getModelsCount()

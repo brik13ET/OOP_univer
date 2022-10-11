@@ -23,7 +23,8 @@ public class NoSuchModelNameException extends Exception {
      *
      * @param msg the detail message.
      */
-    public NoSuchModelNameException(String msg) {
-        super(msg);
+    public NoSuchModelNameException(String modelName) {
+        super("Model Name not found: " + modelName);
     }
+    
 }
