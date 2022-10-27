@@ -7,6 +7,7 @@ public final class Motocycle implements IVehicle{
     private String Manufacture;
     private long lastEdit;
     private final Model head;
+    private int size = 0;
     
     public Motocycle(String manuf, int size)
     {
@@ -23,6 +24,7 @@ public final class Motocycle implements IVehicle{
         {
             ex.printStackTrace(System.out);
         }
+        lastEdit = Instant.now().getEpochSecond();
     }
 
     private class Model
@@ -59,7 +61,6 @@ public final class Motocycle implements IVehicle{
                 DuplicateModelNameException
             
     {
-        lastEdit = Instant.now().getEpochSecond();
         Model node = head.next;
         
         while(!node.Title.equals(newName) && node != head)
@@ -78,6 +79,7 @@ public final class Motocycle implements IVehicle{
                 throw new NoSuchModelNameException(oldName);
         
         node.Title = newName;
+        lastEdit = Instant.now().getEpochSecond();
     }
 
     @Override
@@ -95,9 +97,12 @@ public final class Motocycle implements IVehicle{
     }
 
     @Override
-    public void setModelCostByName(String model, int cost) throws NoSuchModelNameException, ModelPriceOutOfBoundsException {
+    public void setModelCostByName(String model, int cost) throws NoSuchModelNameException
+    {
         
-        lastEdit = Instant.now().getEpochSecond();
+        if (cost < 0) {
+            throw new ModelPriceOutOfBoundsException();
+        }
         Model node = head.next;
         while(!node.Title.equals(model) && node != head)
         {
@@ -106,20 +111,13 @@ public final class Motocycle implements IVehicle{
         if (node == head)
             throw new NoSuchModelNameException(model);
         node.Cost = cost;
+        lastEdit = Instant.now().getEpochSecond();
     }
 
     @Override
-    public int getModelCount() {
-        
-        int ret = 0;
-        Model node;
-        node = head.next;
-        while (node != head)
-        {
-            ret ++;
-            node = node.next;
-        }
-        return ret;
+    public int getModelCount()
+    {
+        return size;
     }
 
     @Override
@@ -138,12 +136,13 @@ public final class Motocycle implements IVehicle{
         if (node != head)
             throw new DuplicateModelNameException("Motocycle class has same model: " + title);
         
-        lastEdit = Instant.now().getEpochSecond();
         Model m = new Model(title, cost);
         m.prev = head.prev;
         m.next = head;
         head.prev = m;
         m.prev.next = m;
+        size++;
+        lastEdit = Instant.now().getEpochSecond();
     }
 
     @Override
@@ -159,19 +158,6 @@ public final class Motocycle implements IVehicle{
             node = node.next;
         }
         return ret;
-    }
-
-    public int getCostOfModelByName(String model) throws NoSuchModelNameException
-    {
-        lastEdit = Instant.now().getEpochSecond();
-        Model node = head.next;
-        while(!node.Title.equals(model)&& node != head)
-        {
-            node = node.next;
-        }
-        if (node == head)
-            throw new NoSuchModelNameException(model);
-        return node.Cost;
     }
     
     @Override
@@ -192,7 +178,6 @@ public final class Motocycle implements IVehicle{
     @Override
     public void delModel(String Name) throws NoSuchModelNameException
     {
-        lastEdit = Instant.now().getEpochSecond();
         Model node = head.next;
         while(!node.Title.equals(Name) && node != head)
         {
@@ -206,6 +191,8 @@ public final class Motocycle implements IVehicle{
         }
         else
             throw new NoSuchModelNameException(Name);
+        size--;
+        lastEdit = Instant.now().getEpochSecond();
             
     }
     
@@ -213,4 +200,5 @@ public final class Motocycle implements IVehicle{
     {
         return lastEdit;
     }
+    
 }

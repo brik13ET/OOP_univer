@@ -24,8 +24,7 @@ public class VehicleAnalyzer {
     {
         String[] s = v.getModelsTitle();
         for (String string : s) {
-            Number c = (Number)v.getModelCostByName(string);
-            System.out.println(string+"\t"+c);
+            System.out.println(string+"\t"+v.getModelCostByName(string));
         }
     }
 }

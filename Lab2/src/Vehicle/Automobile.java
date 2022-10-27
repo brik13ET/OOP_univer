@@ -1,7 +1,6 @@
 package Vehicle;
 
 import java.util.Arrays;
-import java.lang.System;
 
 public class Automobile implements IVehicle{
     private String Manufacature;
@@ -45,9 +44,10 @@ public class Automobile implements IVehicle{
             throws NoSuchModelNameException
     {
         int i = 0;
-        while (i < models.length)
-            if (!(models[i].Title.equals(model)))
+        while (i < models.length && !models[i].Title.equals(model))
+            if (!models[i].Title.equals(model)) {
                 i++;
+            }
         if (i >= models.length)
             throw new NoSuchModelNameException(model);
         else
@@ -66,7 +66,7 @@ public class Automobile implements IVehicle{
         {
             if(models[i].Title.equals(name))
             {
-                models[i].Cost = (int)cost;
+                models[i].Cost = cost;
                 break;
             }
             i++;
@@ -103,9 +103,9 @@ public class Automobile implements IVehicle{
         int i = 0;
         if (newName == null)
             throw new NullPointerException("Bad newName");
-        while(i < models.length && !models[i].equals(newName))
+        while(i < models.length && !models[i].Title.equals(newName))
             i++;
-        if (i != models.length)
+        if (i < models.length)
             throw new DuplicateModelNameException(newName);
         
         i = 0;
@@ -142,16 +142,14 @@ public class Automobile implements IVehicle{
             throws NoSuchModelNameException
     {
         int i = 0;
-        while(i < models.length && models[i].Title.equals(Name))
+        while(i < models.length && !models[i].Title.equals(Name))
         {
                 i ++;
         }
-        if (i == models.length)
+        if (i >= models.length)
             throw new NoSuchModelNameException(Name);
-        var tmp = models;
-        this.models = new Model[this.models.length - 1];
-        System.arraycopy(tmp, 0, this.models, 0, i);
-        System.arraycopy(tmp, i, this.models, i, tmp.length - i - 1);
+        System.arraycopy(models, i+1, this.models, i, models.length - i - 1);
+        models = Arrays.copyOf(models, models.length-1);
     }
     
     public int getModelsCount()
