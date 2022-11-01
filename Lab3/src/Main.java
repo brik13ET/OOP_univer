@@ -22,8 +22,8 @@ class Main {
             IOException,
             ClassNotFoundException
     {
-        //IVehicle v = new Motocycle("Hurrington Motors", 3);
-        IVehicle v = new Automobile("Hyndai",55);
+        IVehicle v = new Motocycle("Hurrington Motors", 42);
+        //IVehicle v = new Automobile("Hyndai",55);
 
         //VehicleAnalyzer.printPriceList(v);
         System.out.println();
@@ -50,11 +50,12 @@ class Main {
         VehicleAnalyzer.printPriceList(test);
         */
         var ois = new ObjectOutputStream(new FileOutputStream("rmp.bin"));
-        v = (Automobile)
+        ois.writeObject((Motocycle)v);
         ois.close();
         var ous = new ObjectInputStream(new FileInputStream("rmp.bin"));
-        v = VehicleAnalyzer.readObject(ous);
+        v = (Motocycle)ous.readObject();
         ous.close();
+        
         VehicleAnalyzer.printPriceList(v);
         
     }
