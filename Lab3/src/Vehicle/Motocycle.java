@@ -3,6 +3,7 @@ package Vehicle;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -13,6 +14,10 @@ public final class Motocycle implements IVehicle{
     private long lastEdit;
     private final Model head;
     private int size = 0;
+    
+    {
+        lastEdit = Instant.now().getEpochSecond();
+    }
     
     public Motocycle(String manuf, int size)
     {
@@ -32,7 +37,7 @@ public final class Motocycle implements IVehicle{
         lastEdit = Instant.now().getEpochSecond();
     }
 
-    private class Model
+    private class Model implements Serializable
     {
         public String Title;
         public int Cost;
@@ -204,36 +209,5 @@ public final class Motocycle implements IVehicle{
     public long getLastEdit()
     {
         return lastEdit;
-    }
-    
-    public void writeObject(ObjectOutputStream ois)
-            throws IOException
-    {
-        ois.writeUTF(this.getClass().getName());
-        ois.writeUTF(this.Manufacture);
-        ois.writeInt(this.getModelCount());
-        var n = this.head.next;
-        while (n != this.head) {
-            ois.writeUTF(n.Title);
-            ois.writeInt(n.Cost);
-        }
-    }
-    
-    public void readObject(ObjectInputStream in)
-            throws
-                IOException,
-                ClassNotFoundException
-    {
-        if (in.readUTF() != this.getClass().getName())
-            throw new ClassNotFoundException();
-        this.Manufacture = in.readUTF();
-        int cnt = in.readInt();
-        for (int i = 0; i < cnt; i++) {
-            try {
-                this.addModel(in.readUTF(), in.readInt());
-            } catch (DuplicateModelNameException ex) {
-                System.err.println(ex);
-            }
-        }
     }
 }

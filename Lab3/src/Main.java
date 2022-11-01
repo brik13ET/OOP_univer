@@ -1,13 +1,16 @@
 
 import Vehicle.*;
-import java.io.File;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.DataInputStream;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 
 class Main {
 
@@ -16,32 +19,43 @@ class Main {
             DuplicateModelNameException,
             NoSuchModelNameException,
             FileNotFoundException,
-            IOException
+            IOException,
+            ClassNotFoundException
     {
-        IVehicle v = new Motocycle("Hurrington Motors", 3);
-        //IVehicle v = new Automobile("Hyndai",5);
+        //IVehicle v = new Motocycle("Hurrington Motors", 3);
+        IVehicle v = new Automobile("Hyndai",55);
 
-        System.out.println("MAnufacter:\t" + v.getManufacture());
+        //VehicleAnalyzer.printPriceList(v);
         System.out.println();
-        
         /*
-        VehicleAnalyzer.printPriceList(v);
-        System.out.println();
-        
-        VehicleAnalyzer.writeVehicle(v, new OutputStreamWriter(System.out));
-        Motocycle read = VehicleAnalyzer.readMotocycle(new InputStreamReader(System.in));
+        VehicleAnalyzer.writeVehicle(v,
+                new PrintWriter(System.out));
+        var read = VehicleAnalyzer.readVehicle(
+                new BufferedReader(
+                        new InputStreamReader(System.in)));
+        System.out.println(read.getClass().getName());
         VehicleAnalyzer.printPriceList(read);
         */
         /*
-        var f = new File("rmp.bin");
-        f.createNewFile();
-        var fos = new FileOutputStream(f, false);
-        VehicleAnalyzer.outputVehicle(v, fos);
+        FileOutputStream fos = new FileOutputStream("rmp.bin");
+        var dos = new DataOutputStream(fos);
+        VehicleAnalyzer.outputVehicle(v, dos);
         fos.close();
         
-        var fis = new FileInputStream(f);
-        IVehicle test = VehicleAnalyzer.inputAutomobile(fis);
+        FileInputStream fis = new FileInputStream("rmp.bin");
+        var dis = new DataInputStream(fis);
+        IVehicle test = VehicleAnalyzer.inputVehicle(dis);
+        fis.close();
+        System.out.println(test.getClass().getName());
         VehicleAnalyzer.printPriceList(test);
         */
+        var ois = new ObjectOutputStream(new FileOutputStream("rmp.bin"));
+        v = (Automobile)
+        ois.close();
+        var ous = new ObjectInputStream(new FileInputStream("rmp.bin"));
+        v = VehicleAnalyzer.readObject(ous);
+        ous.close();
+        VehicleAnalyzer.printPriceList(v);
+        
     }
 }

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamException;
+import java.io.Serializable;
 import java.util.Arrays;
 
 public class Automobile implements IVehicle{
@@ -20,7 +21,7 @@ public class Automobile implements IVehicle{
         }
     }
 
-    private class Model
+    private class Model implements Serializable
     {
             public String Title;
             public int Cost;
@@ -159,31 +160,6 @@ public class Automobile implements IVehicle{
     public int getModelsCount()
     {
             return models.length;
-    }
-    
-    public void writeObject(ObjectOutputStream ois)
-            throws IOException
-    {
-        ois.writeUTF(this.getClass().getName());
-        ois.writeUTF(this.Manufacature);
-        ois.writeInt(this.getModelsCount());
-        for (Model model : models) {
-            ois.writeUTF(model.Title);
-            ois.writeInt(model.Cost);
-        }
-    }
-    
-    public void readObject(ObjectInputStream in)
-            throws IOException, ClassNotFoundException
-    {
-        if (in.readUTF() != this.getClass().getName())
-            throw new ClassNotFoundException();
-        this.Manufacature = in.readUTF();
-        int cnt = in.readInt();
-        this.models = new Model[cnt];
-        for (int i = 0; i < cnt; i++) {
-            this.models[i] = new Model(in.readUTF(), in.readInt());
-        }
     }
     
 }

@@ -32,11 +32,4 @@ public interface IVehicle extends Serializable{
             throws DuplicateModelNameException;
     public void     delModel(String title)
             throws NoSuchModelNameException;
-    // Serializtion
-    
-    public void writeObject(ObjectOutputStream ois)
-            throws IOException;
-    
-    public void readObject(ObjectInputStream in)
-            throws IOException, ClassNotFoundException;
 }
