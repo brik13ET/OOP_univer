@@ -1,0 +1,13 @@
+Vehicle.Motocycle
+Hurrington Motors
+5
+Model 0
+10000
+Model 1
+35000
+Model 2
+60000
+Model 3
+85000
+Model 4
+110000

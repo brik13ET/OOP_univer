@@ -10,13 +10,9 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.BufferedReader;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.io.Reader;
 import java.io.UnsupportedEncodingException;
-import java.io.Writer;
 import java.nio.charset.Charset;
 
 /**
@@ -43,11 +39,10 @@ public class VehicleAnalyzer {
             System.out.println(string+"\t"+v.getModelCostByName(string));
         }
     }
-    // Lab 3
-    public static void outputVehicle (IVehicle v, OutputStream oout)
+    
+    public static void outputVehicle (IVehicle v, DataOutputStream out)
             throws UnsupportedEncodingException, IOException
     {
-        DataOutputStream out = new DataOutputStream(oout);
         String type = v.getClass().getName();
         String mark = v.getManufacture();
         var modelNames = v.getModelsTitle();
@@ -68,13 +63,12 @@ public class VehicleAnalyzer {
             out.write(mn_bytes);
             out.writeInt(modelCosts[i]);
         }
-        out.flush();
+        
     }
     
-    public static IVehicle inputVehicle(InputStream iin)
+    public static IVehicle inputVehicle(DataInputStream in)
             throws IOException, DuplicateModelNameException
     {
-        DataInputStream in = new DataInputStream(iin);
         int type_size = in.readInt();
         String type = new String(
                 in.readNBytes(type_size),
@@ -105,10 +99,9 @@ public class VehicleAnalyzer {
         return ret;
     }
     
-    public static void writeVehicle(IVehicle v, Writer oout)
+    public static void writeVehicle(IVehicle v, PrintWriter out)
             throws IOException
     {
-        PrintWriter out = new PrintWriter(oout);
         out.println(v.getClass().getName());
         out.println(v.getManufacture());
         int cnt = v.getModelCount();
@@ -123,10 +116,9 @@ public class VehicleAnalyzer {
         out.flush();
     }
     
-    public static IVehicle readVehicle (Reader iin)
+    public static IVehicle readVehicle (BufferedReader in)
             throws IOException, DuplicateModelNameException
     {
-        BufferedReader in = new BufferedReader(iin);
         String cls = in.readLine();
         String manuf = in.readLine();
         IVehicle ret;
@@ -148,6 +140,40 @@ public class VehicleAnalyzer {
             String mcost_str = in.readLine();
             
             ret.addModel(mname, Integer.parseInt(mcost_str));
+        }
+        return ret;
+    }
+    
+    public static void writeObject(ObjectOutputStream ous, IVehicle v)
+            throws IOException
+    {
+        ous.writeUTF(v.getClass().getName());
+        ous.writeUTF(v.getManufacture());
+        int cnt = v.getModelCount();
+        ous.writeInt(cnt);
+        var costs = v.getModelsCost();
+        var names = v.getModelsTitle();
+        for (int i = 0; i < cnt; i++) {
+            ous.writeUTF(names[i]);
+            ous.writeInt(costs[i]);
+        }
+    }
+    public static IVehicle readObject(ObjectInputStream ois)
+            throws IOException, ClassNotFoundException, DuplicateModelNameException
+    {
+        var type = ois.readUTF();
+        var manuf = ois.readUTF();
+        IVehicle ret;
+        switch (type)
+        {
+            case "Vehicle.Automobile": ret = new Automobile(manuf, 0); break;
+            case "Vehicle.Motocycle": ret = new Motocycle(manuf, 0); break;
+            default : throw new ClassNotFoundException();
+        }
+        var cnt = ois.readInt();
+        for (int i = 0; i < cnt; i++)
+        {
+            ret.addModel(ois.readUTF(),ois.readInt());
         }
         return ret;
     }

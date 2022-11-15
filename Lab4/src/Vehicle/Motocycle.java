@@ -1,7 +1,14 @@
 package Vehicle;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.io.Serializable;
+import java.io.StringWriter;
 import java.time.Instant;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public final class Motocycle implements IVehicle{
 
@@ -204,5 +211,40 @@ public final class Motocycle implements IVehicle{
     public long getLastEdit()
     {
         return lastEdit;
+    }
+    
+    
+    @Override
+    public String toString()
+    {
+        StringWriter sw = new StringWriter();
+        try {
+            VehicleAnalyzer.writeVehicle(this, new PrintWriter(sw));
+        } catch (IOException ex) {
+            System.err.println("Impossible exception occured: " + ex.getMessage());
+        }
+        return sw.toString();
+    }
+    
+    @Override
+    public boolean equals(Object obj)
+    {
+        return obj.getClass().isInstance(this);
+    }
+    
+    @Override
+    public int hashCode()
+    {
+        return (this.getClass().getCanonicalName().hashCode() << 16) |
+               (this.Manufacture.hashCode() << 8) |
+               this.getModelCount();
+    }
+    
+    @Override
+    public Object clone() throws CloneNotSupportedException
+    {
+        Object sc = super.clone();
+        return sc;
+        
     }
 }
