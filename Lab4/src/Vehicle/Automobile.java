@@ -164,6 +164,8 @@ public class Automobile implements IVehicle{
             return models.length;
     }
     
+    // Lab 4
+    
     @Override
     public String toString()
     {
@@ -179,8 +181,17 @@ public class Automobile implements IVehicle{
     @Override
     public boolean equals(Object obj)
     {
-        if (obj.hashCode() == this.hashCode())
-            return true;
+        if (obj.hashCode() != this.hashCode())
+            return false;
+        if (!(obj instanceof Automobile))
+            return false;
+            
+        Automobile a = (Automobile)obj;
+        if (a.Manufacature != this.Manufacature)
+            return false;
+        if (!a.models.equals(models))
+            return false;
+        return true;
     }
     
     @Override
@@ -197,6 +208,4 @@ public class Automobile implements IVehicle{
         Object sc = super.clone();
         return sc;
     }
-    
-    
 }

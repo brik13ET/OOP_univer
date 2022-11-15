@@ -62,8 +62,7 @@ class Main {
         
         // Object IO
         
-        var ois = new ObjectOutputStream(
-                new FileOutputStream("rmp.bin"));
+        var ois = new ObjectOutputStream(new FileOutputStream("rmp.bin"));
         ois.writeObject((Motocycle)v);
         ois.close();
         

@@ -15,10 +15,11 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws DuplicateModelNameException {
-        var a = new Automobile("0xDEADBEEF", 2);
-        IVehicle b;
+        var a = new Motocycle("(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧", 2);
+        IVehicle b ,c;
         try {
-            b = (Automobile)a.clone();
+            b = (Motocycle)a.clone();
+            c = (Motocycle)a.clone();
         } catch (CloneNotSupportedException ex) {
             System.err.println(ex.getMessage());
             return;
@@ -28,7 +29,9 @@ public class Main {
         System.out.println(b.toString());
         System.out.println(a.hashCode());
         System.out.println(b.hashCode());
-        System.out.println(b == a);
+        System.out.println(c.hashCode());
+        System.out.println(((Motocycle)b).equals(a));
+        System.out.println(((Motocycle)b).equals(c));
         
     }
     
