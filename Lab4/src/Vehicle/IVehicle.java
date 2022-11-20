@@ -14,30 +14,31 @@ import java.io.Serializable;
  * @author user0
  */
 public interface IVehicle extends Serializable, Cloneable{
-    public String   getManufacture();
-    public void     setManufacture(String manuf);
+    String   getManufacture();
+    void     setManufacture(String manuf);
     
-    public void     setModelTitle(String oldName, String newName)
+    void     setModelTitle(String oldName, String newName)
             throws DuplicateModelNameException, NoSuchModelNameException;
-    public String[] getModelsTitle();
+    String[] getModelsTitle();
     
-    public int[]    getModelsCost();
-    public int      getModelCostByName(String model)
+    int[]    getModelsCost();
+    int      getModelCostByName(String model)
             throws NoSuchModelNameException;
-    public void     setModelCostByName(String model, int cost)
+    void     setModelCostByName(String model, int cost)
             throws NoSuchModelNameException;
     
-    public int      getModelCount();
-    public void     addModel(String title, int cost)
+    int      getModelCount();
+    void     addModel(String title, int cost)
             throws DuplicateModelNameException;
-    public void     delModel(String title)
+    void     delModel(String title)
             throws NoSuchModelNameException;
+        
+    @Override
+    String toString();
+    @Override
+    boolean equals(Object obj);
+    @Override
+    int hashCode();
     
-    @Override
-    public String toString();
-    @Override
-    public boolean equals(Object obj);
-    @Override
-    public int hashCode();
-    public Object clone() throws CloneNotSupportedException;
+    Object clone() throws CloneNotSupportedException;
 }

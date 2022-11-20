@@ -10,11 +10,14 @@
 import Vehicle.*;
 
 public class Main {
-
+    
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws DuplicateModelNameException {
+    public static void main(String[] args)
+            throws  DuplicateModelNameException,
+                    NoSuchModelNameException
+    {
         var a = new Motocycle("(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧", 2);
         IVehicle b ,c;
         try {
@@ -24,7 +27,10 @@ public class Main {
             System.err.println(ex.getMessage());
             return;
         }
-        a.addModel("XDXDXDXD", 420_1337);
+        
+        a.addModel("(╯°□°）╯︵ ┻━┻", 420_1337);
+        a.setModelTitle("Model 1", "ヾ(•ω•`)o");
+        
         System.out.println(a.toString());
         System.out.println(b.toString());
         System.out.println(a.hashCode());
@@ -32,7 +38,6 @@ public class Main {
         System.out.println(c.hashCode());
         System.out.println(((Motocycle)b).equals(a));
         System.out.println(((Motocycle)b).equals(c));
-        
     }
     
 }

@@ -23,7 +23,7 @@ public class Automobile implements IVehicle{
         }
     }
 
-    private class Model implements Serializable
+    private class Model implements Serializable,Cloneable
     {
             public String Title;
             public int Cost;
@@ -32,6 +32,23 @@ public class Automobile implements IVehicle{
             {
                     Title = title;
                     Cost = cost;
+            }
+            
+            @Override
+            public boolean equals(Object obj)
+            {
+                // add hash()
+                if (!(obj instanceof Model))
+                    return false;
+                return Title.equals(((Model)obj).Title) && Cost == ((Model)obj).Cost;
+            }
+            
+            @Override
+            public Object clone() throws CloneNotSupportedException 
+            {
+                Model ret = (Model)super.clone();
+                //ret.Title = new String(Title);
+                return ret;
             }
     }
     
@@ -169,6 +186,7 @@ public class Automobile implements IVehicle{
     @Override
     public String toString()
     {
+        // set string buffer
         StringWriter sw = new StringWriter();
         try {
             VehicleAnalyzer.writeVehicle(this, new PrintWriter(sw));
@@ -180,17 +198,23 @@ public class Automobile implements IVehicle{
     
     @Override
     public boolean equals(Object obj)
-    {
-        if (obj.hashCode() != this.hashCode())
-            return false;
+    {// cmp srt with .equals
+        // перед instanceof
+        // 
         if (!(obj instanceof Automobile))
+            return false;
+        if (((Automobile)obj).hashCode() != this.hashCode())
             return false;
             
         Automobile a = (Automobile)obj;
         if (a.Manufacature != this.Manufacature)
             return false;
-        if (!a.models.equals(models))
+        if (a.models.length != models.length)
             return false;
+        for (int i = 0; i < models.length; i++) {
+            if (!models[i].equals(a.models[i]))
+                return false;
+        }
         return true;
     }
     
@@ -205,7 +229,11 @@ public class Automobile implements IVehicle{
     @Override
     public Object clone() throws CloneNotSupportedException
     {
-        Object sc = super.clone();
+        Automobile sc = (Automobile)super.clone();
+        sc.models = new Model[sc.models.length];
+        for (int i = 0; i < sc.models.length; i++) {
+            sc.models[i] = (Model)models[i].clone();
+        }
         return sc;
     }
 }

@@ -6,7 +6,7 @@ import java.time.Instant;
 public final class Motocycle implements IVehicle{
 
     private String Manufacture;
-    private long lastEdit;
+    private transient long lastEdit;
     private final Model head;
     private int size = 0;
     

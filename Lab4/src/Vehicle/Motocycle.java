@@ -4,11 +4,12 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.io.StringWriter;
 import java.time.Instant;
+
 public final class Motocycle implements IVehicle{
 
     private String Manufacture;
     private long lastEdit;
-    private final Model head;
+    private Model head;
     private int size = 0;
     
     {
@@ -33,17 +34,35 @@ public final class Motocycle implements IVehicle{
         lastEdit = Instant.now().getEpochSecond();
     }
 
-    private class Model implements Serializable
+    private class Model implements Serializable,Cloneable
     {
         public String Title;
         public int Cost;
         Model next;
         Model prev;
-
+        
         public Model(String title, int cost)
         {
             Title = title;
             Cost = cost;
+        }
+        
+        @Override
+        public boolean equals(Object obj)
+        {
+            if (!(obj instanceof Model))
+                return false;
+            return Title.equals(((Model)obj).Title) && Cost == ((Model)obj).Cost;
+        }
+
+        @Override
+        public Object clone() throws CloneNotSupportedException 
+        {
+            Model ret = (Model)super.clone();
+            ret.Title = new String(Title);
+            ret.next = null;
+            ret.prev = null;
+            return ret;
         }
     }
     
@@ -216,7 +235,7 @@ public final class Motocycle implements IVehicle{
         try {
             VehicleAnalyzer.writeVehicle(this, sw);
         } catch (IOException ex) {
-            System.err.println("Impossible exception occured: " + ex.getMessage());
+            System.err.println("Impossible exception occured:\n" + ex.getMessage());
         }
         return sw.toString();
     }
@@ -230,7 +249,7 @@ public final class Motocycle implements IVehicle{
             return false;
             
         Motocycle a = (Motocycle)obj;
-        if (a.Manufacture != this.Manufacture)
+        if (!this.Manufacture.equals(a.Manufacture))
             return false;        
         // CDLL compare
         
@@ -242,7 +261,7 @@ public final class Motocycle implements IVehicle{
         boolean same = true;
         
         for (int i = 0; i < size && same; i++) {
-            same = (n.Cost == m.Cost ) && (m.Title == n.Title);
+            same = (n.Cost == m.Cost ) && (m.Title.equals(n.Title));
             m = m.next;
             n = n.next;
         }
@@ -262,17 +281,20 @@ public final class Motocycle implements IVehicle{
     @Override
     public Object clone() throws CloneNotSupportedException
     {
-        Motocycle sc = new Motocycle(Manufacture, 0);
-        Model n = head.next;
-        while (n != head)
-        {
-            try {
-                sc.addModel(n.Title, n.Cost);
-            } catch (DuplicateModelNameException ex) {
-                System.out.print(ex);
-            }
+        Motocycle sc = (Motocycle)super.clone();
+        Model n = head;
+        Model p = (Model)n.clone();
+        Model __head = p;
+        do {
+            p.next = (Model)n.next.clone();
+            p.next.prev = p;
+            
+            p = p.next;
             n = n.next;
-        }
+        } while (n.next != head);
+        __head.prev = p;
+        p.next = __head;
+        sc.head = __head;
         return sc;
     }
 }
