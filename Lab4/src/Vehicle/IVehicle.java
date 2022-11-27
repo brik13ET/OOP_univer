@@ -21,14 +21,14 @@ public interface IVehicle extends Serializable, Cloneable{
             throws DuplicateModelNameException, NoSuchModelNameException;
     String[] getModelsTitle();
     
-    int[]    getModelsCost();
-    int      getModelCostByName(String model)
+    double[]    getModelsCost();
+    double      getModelCostByName(String model)
             throws NoSuchModelNameException;
-    void     setModelCostByName(String model, int cost)
+    void     setModelCostByName(String model, double cost)
             throws NoSuchModelNameException;
     
     int      getModelCount();
-    void     addModel(String title, int cost)
+    void     addModel(String title, double cost)
             throws DuplicateModelNameException;
     void     delModel(String title)
             throws NoSuchModelNameException;

@@ -66,7 +66,7 @@ public class VehicleAnalyzer {
             byte[] mn_bytes = modelNames[i].getBytes();
             out.writeInt(mn_bytes.length);
             out.write(mn_bytes);
-            out.writeInt(modelCosts[i]);
+            out.writeDouble(modelCosts[i]);
         }
         out.flush();
     }
@@ -99,7 +99,7 @@ public class VehicleAnalyzer {
             int mn_size = in.readInt();
             byte[] mn_array = in.readNBytes(mn_size);
             String modelName = new String(mn_array, Charset.defaultCharset());
-            int modelCost = in.readInt();
+            double modelCost = in.readDouble();
             ret.addModel(modelName, modelCost);
         }
         return ret;

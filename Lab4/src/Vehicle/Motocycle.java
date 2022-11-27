@@ -34,35 +34,17 @@ public final class Motocycle implements IVehicle{
         lastEdit = Instant.now().getEpochSecond();
     }
 
-    private class Model implements Serializable,Cloneable
+    private class Model implements Serializable
     {
         public String Title;
-        public int Cost;
+        public double  Cost;
         Model next;
         Model prev;
         
-        public Model(String title, int cost)
+        public Model(String title, double  cost)
         {
             Title = title;
             Cost = cost;
-        }
-        
-        @Override
-        public boolean equals(Object obj)
-        {
-            if (!(obj instanceof Model))
-                return false;
-            return Title.equals(((Model)obj).Title) && Cost == ((Model)obj).Cost;
-        }
-
-        @Override
-        public Object clone() throws CloneNotSupportedException 
-        {
-            Model ret = (Model)super.clone();
-            ret.Title = new String(Title);
-            ret.next = null;
-            ret.prev = null;
-            return ret;
         }
     }
     
@@ -108,7 +90,7 @@ public final class Motocycle implements IVehicle{
     }
 
     @Override
-    public int getModelCostByName(String model) throws NoSuchModelNameException
+    public double  getModelCostByName(String model) throws NoSuchModelNameException
     {
         Model node = head.next;
         while(!node.Title.equals(model) && node != head)
@@ -122,7 +104,7 @@ public final class Motocycle implements IVehicle{
     }
 
     @Override
-    public void setModelCostByName(String model, int cost) throws NoSuchModelNameException
+    public void setModelCostByName(String model, double cost) throws NoSuchModelNameException
     {
         
         if (cost < 0) {
@@ -146,7 +128,7 @@ public final class Motocycle implements IVehicle{
     }
 
     @Override
-    public void addModel(String title, int cost)
+    public void addModel(String title, double cost)
             throws
                 DuplicateModelNameException
     {
@@ -171,9 +153,9 @@ public final class Motocycle implements IVehicle{
     }
 
     @Override
-    public int[] getModelsCost()
+    public double[] getModelsCost()
     {
-        int[] ret = new int[size ];
+        double[] ret = new double[size ];
         Model node = head.next;
         int i = 0;
         while(node != head)
@@ -231,24 +213,33 @@ public final class Motocycle implements IVehicle{
     @Override
     public String toString()
     {
-        StringWriter sw = new StringWriter();
-        try {
-            VehicleAnalyzer.writeVehicle(this, sw);
-        } catch (IOException ex) {
-            System.err.println("Impossible exception occured:\n" + ex.getMessage());
+        var sb = new StringBuilder();
+        sb.append(this.Manufacture).append('\n');
+        
+        for (Model m = head.next; m != head; m = m.next)
+        {
+            sb.append(
+                    String.format("Model: %s\tCost: %f\n",
+                            m.Title, m.Cost
+                    )
+            );
         }
-        return sw.toString();
+        return sb.toString();
     }
     
     @Override
     public boolean equals(Object obj)
     {
-        if (obj.hashCode() != this.hashCode())
+        if (obj == null)
             return false;
+        if (obj == this)
+            return true;
         if (!(obj instanceof Motocycle))
             return false;
-            
-        Motocycle a = (Motocycle)obj;
+        var a = (Motocycle)obj;
+        if (a.hashCode() != this.hashCode())
+            return false;
+        
         if (!this.Manufacture.equals(a.Manufacture))
             return false;        
         // CDLL compare
@@ -265,9 +256,7 @@ public final class Motocycle implements IVehicle{
             m = m.next;
             n = n.next;
         }
-        if (!same)
-            return false;
-        return true;
+        return same;
     }
     
     @Override
@@ -283,18 +272,18 @@ public final class Motocycle implements IVehicle{
     {
         Motocycle sc = (Motocycle)super.clone();
         Model n = head;
-        Model p = (Model)n.clone();
-        Model __head = p;
+        Model p = new Model(n.Title, n.Cost);
+        Model sc_head = p;
         do {
-            p.next = (Model)n.next.clone();
+            p.next = new Model (n.next.Title, n.next.Cost);
             p.next.prev = p;
             
             p = p.next;
             n = n.next;
         } while (n.next != head);
-        __head.prev = p;
-        p.next = __head;
-        sc.head = __head;
+        sc_head.prev = p;
+        p.next = sc_head;
+        sc.head = sc_head;
         return sc;
     }
 }

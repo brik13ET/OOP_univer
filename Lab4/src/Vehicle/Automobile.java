@@ -1,12 +1,6 @@
 package Vehicle;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.ObjectStreamException;
-import java.io.PrintWriter;
 import java.io.Serializable;
-import java.io.StringWriter;
 import java.util.Arrays;
 
 public class Automobile implements IVehicle{
@@ -23,32 +17,15 @@ public class Automobile implements IVehicle{
         }
     }
 
-    private class Model implements Serializable,Cloneable
+    private class Model implements Serializable
     {
             public String Title;
-            public int Cost;
+            public double Cost;
 
-            public Model(String title, int cost )
+            public Model(String title, double cost )
             {
                     Title = title;
                     Cost = cost;
-            }
-            
-            @Override
-            public boolean equals(Object obj)
-            {
-                // add hash()
-                if (!(obj instanceof Model))
-                    return false;
-                return Title.equals(((Model)obj).Title) && Cost == ((Model)obj).Cost;
-            }
-            
-            @Override
-            public Object clone() throws CloneNotSupportedException 
-            {
-                Model ret = (Model)super.clone();
-                //ret.Title = new String(Title);
-                return ret;
             }
     }
     
@@ -64,7 +41,7 @@ public class Automobile implements IVehicle{
     }
 
     @Override
-    public int getModelCostByName(String model)
+    public double  getModelCostByName(String model)
             throws NoSuchModelNameException
     {
         int i = 0;
@@ -79,7 +56,7 @@ public class Automobile implements IVehicle{
     }
 
     @Override
-    public void setModelCostByName(String name, int cost)
+    public void setModelCostByName(String name, double  cost)
             throws
                 NoSuchModelNameException
     {
@@ -98,7 +75,7 @@ public class Automobile implements IVehicle{
     }
 
     @Override
-    public void addModel(String title, int cost)
+    public void addModel(String title, double cost)
             throws
                 DuplicateModelNameException
     {
@@ -152,9 +129,9 @@ public class Automobile implements IVehicle{
     }
     
     @Override
-    public int[] getModelsCost()
+    public double [] getModelsCost()
     {
-        int[] ret = new int[models.length];
+        double[] ret = new double[models.length];
         for (int i = 0; i < models.length; i++)
         {
             ret[i]= models[i].Cost;
@@ -186,33 +163,42 @@ public class Automobile implements IVehicle{
     @Override
     public String toString()
     {
-        // set string buffer
-        StringWriter sw = new StringWriter();
-        try {
-            VehicleAnalyzer.writeVehicle(this, new PrintWriter(sw));
-        } catch (IOException ex) {
-            System.err.println("Impossible exception occured: " + ex.getMessage());
+        var sb = new StringBuilder();
+        sb.append(this.Manufacature).append('\n');
+        for (int i = 0; i < models.length; i++)
+        {
+            sb.append(
+                    String.format("Model: %s\tCost: %f\n",
+                            models[i].Title, models[i].Cost
+                    )
+            );
         }
-        return sw.toString();
+        return sb.toString();
     }
     
     @Override
     public boolean equals(Object obj)
-    {// cmp srt with .equals
-        // перед instanceof
-        // 
+    {
+        if (obj == null)
+            return false;
+        if (obj == this)
+            return true;
         if (!(obj instanceof Automobile))
             return false;
-        if (((Automobile)obj).hashCode() != this.hashCode())
+        Automobile a = (Automobile)obj;
+        if (a.hashCode() != this.hashCode())
             return false;
             
-        Automobile a = (Automobile)obj;
-        if (a.Manufacature != this.Manufacature)
+        if (a.Manufacature == null ?
+                this.Manufacature != null :
+                !a.Manufacature.equals(this.Manufacature)
+            )
             return false;
         if (a.models.length != models.length)
             return false;
         for (int i = 0; i < models.length; i++) {
-            if (!models[i].equals(a.models[i]))
+            if (!models[i].Title.equals(a.models[i].Title) ||
+                    models[i].Cost != a.models[i].Cost)
                 return false;
         }
         return true;
@@ -221,8 +207,8 @@ public class Automobile implements IVehicle{
     @Override
     public int hashCode()
     {
-        return (this.getClass().getCanonicalName().hashCode() << 16) |
-               (this.Manufacature.hashCode() << 8) |
+        return this.getClass().getCanonicalName().hashCode() ^
+               this.Manufacature.hashCode() ^
                this.getModelCount();
     }
     
@@ -232,7 +218,7 @@ public class Automobile implements IVehicle{
         Automobile sc = (Automobile)super.clone();
         sc.models = new Model[sc.models.length];
         for (int i = 0; i < sc.models.length; i++) {
-            sc.models[i] = (Model)models[i].clone();
+            sc.models[i] = new Model(models[i].Title, models[i].Cost);
         }
         return sc;
     }
