@@ -120,12 +120,12 @@ public class Automobile implements IVehicle{
     @Override
     public String[] getModelsTitle()
     {
-            String[] ret = new String[models.length];
-            for (int i = 0; i < models.length; i++)
-            {
-                    ret[i]= models[i].Title;
-            }
-            return ret;
+        String[] ret = new String[models.length];
+        for (int i = 0; i < models.length; i++)
+        {
+                ret[i]= models[i].Title;
+        }
+        return ret;
     }
     
     @Override
@@ -163,7 +163,7 @@ public class Automobile implements IVehicle{
     @Override
     public String toString()
     {
-        var sb = new StringBuffer();
+        var sb = new StringBuilder();
         sb.append(this.Manufacature).append('\n');
         for (int i = 0; i < models.length; i++)
         {

@@ -213,7 +213,7 @@ public final class Motocycle implements IVehicle{
     @Override
     public String toString()
     {
-        var sb = new StringWriter();
+        var sb = new StringBuilder();
         sb.append(this.Manufacture).append('\n');
         
         for (Model m = head.next; m != head; m = m.next)

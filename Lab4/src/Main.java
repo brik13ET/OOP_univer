@@ -33,15 +33,15 @@ public class Main {
         
         a.setModelTitle("Model 1", "ヾ(•ω•`)o");
         
-        System.out.println(a.toString());
-        System.out.println(b.toString());
+        System.out.println("Оригинал:\n" + a.toString());
+        System.out.println("Копия:\n" + b.toString());
         
-        System.out.println(a.hashCode());
-        System.out.println(b.hashCode());
-        System.out.println(c.hashCode());
+        System.out.println("Хэш оригинала: " + a.hashCode());
+        System.out.println("Хэш копии: " + b.hashCode());
+        System.out.println("Хэш 2й копии: " + c.hashCode());
         
-        System.out.println(((IVehicle)b).equals(a));
-        System.out.println(((IVehicle)b).equals(c));
+        System.out.println("Оригинал равен копии ? " + ((IVehicle)b).equals(a));
+        System.out.println("2я копия равна копии ? " + ((IVehicle)b).equals(c));
     }
     
 }
