@@ -11,13 +11,16 @@ import Vehicle.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
 public class Main {
     
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws IllegalAccessException, InvocationTargetException, InstantiationException
+    public static void main(String[] args)
+            throws
+                IllegalAccessException,
+                InvocationTargetException,
+                InstantiationException
     {
         if (args.length <= 3)
         {
@@ -25,18 +28,6 @@ public class Main {
                     "Too less arguments\n"+
                     "Params:\n\t fullClassName methodName param1 param2\n"
             );
-            if (args.length == 2 && args[1] == "?")
-            {
-                try {
-                    Class c = Class.forName(args[0]);
-                    Method[] ms = c.getMethods();
-                    for (int i = 0; i < ms.length; i++) {
-                        System.out.println(ms[i]);
-                    }
-                } catch (ClassNotFoundException ex) {
-                    System.err.println(ex);
-                }
-            }
             return;
         }
         
@@ -56,7 +47,11 @@ public class Main {
             Object a = co.newInstance("🚑", 4);
             mc.invoke(a, args[2], Integer.valueOf(args[3]));
             
-            System.out.println("Результат:\n" + a.toString());
+            System.out.printf(
+                    "Результат:\n%s\n%s\n",
+                    a.getClass().getCanonicalName(),
+                    a.toString()
+            );
             
         } catch (ClassNotFoundException e) {
             System.err.println("Class " + args[0] + "not found.\n");
@@ -64,11 +59,47 @@ public class Main {
             System.err.println(ex);
         }
         
-        IVehicle v1 = new Automobile("🚗", 10);
-        IVehicle v2 = new Quadricycle("🏍", 10);
-        IVehicle v3 = new Motocycle("🏍", 10);
+        IVehicle v1 = new Moped("🚗", 0);
+        IVehicle v2 = new Quadricycle("🏍", 0);
+        IVehicle v3 = new Scooter("🏍", 0);
         
-        System.out.println("Vararg avg: " + VehicleAnalyzer.doAvgVararg(v1, v2, v3));
+        try {
+            v1.addModel("🚀", 100_000);
+            v2.addModel("🛰", 300_000);
+            v3.addModel("🌙", 600_000);
+        } catch (DuplicateModelNameException ex) {
+            System.err.println(ex);
+            return;
+        }
+        
+        try {
+            VehicleAnalyzer.printPriceList(v1);
+            VehicleAnalyzer.printPriceList(v2);
+            VehicleAnalyzer.printPriceList(v3);
+        } catch (NoSuchModelNameException ex) {
+            System.err.println(ex);
+            return;
+        }
+        
+        System.out.println(
+                "Vararg avg: " + VehicleAnalyzer.doAvgVararg(v1, v2, v3)
+        );
+        
+        // v1 Moped
+        // v2 Quadricycle
+        // v3 Scooter
+        
+        var v4 = VehicleAnalyzer.createVehicle("костыль и велосипед", 1, v3);
+        try {
+            v4.addModel("⭐⭐⭐", 123_456);
+        } catch (DuplicateModelNameException ex) {
+            System.err.println(ex);
+            return;            
+        }
+        
+        System.out.println(v4.getClass().getCanonicalName());
+        System.out.println(v4);
+        
     }
     
 }

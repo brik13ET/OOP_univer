@@ -66,17 +66,25 @@ public class Scooter implements IVehicle
 
     @Override
     public String[] getModelsTitle() {
-        return (String[])store.keySet().toArray();
+        var models = store.keySet();
+        var ret = new String[models.size()];
+        int i = 0;
+        for (var model : models) {
+            ret[i] = model;
+            i++;
+        }
+        return ret;
     }
 
     @Override
     public double[] getModelsCost()
     {
-        var models = (Double[])store.values().toArray();
-        double[] ret = new double[models.length];
-        for (int i = 0; i < models.length; i++)
-        {
-            ret[i] = models[i];
+        var models = store.values();
+        double[] ret = new double[models.size()];
+        int i = 0;
+        for (Double model : models) {
+            ret[i] = model;
+            i++;
         }
         return ret;
     }
@@ -107,6 +115,8 @@ public class Scooter implements IVehicle
     public void addModel(String title, double cost)
             throws DuplicateModelNameException
     {
+        if (cost < 0)
+            throw new ModelPriceOutOfBoundsException();
         if (store.get(title) != null)
             throw new DuplicateModelNameException();
         store.put(title, cost);
