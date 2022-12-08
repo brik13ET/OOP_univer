@@ -8,19 +8,20 @@
  * @author user0
  */
 import Vehicle.*;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+
 public class Main {
     
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args)
-            throws
-                IllegalAccessException,
-                InvocationTargetException,
-                InstantiationException
     {
         if (args.length <= 3)
         {
@@ -53,10 +54,17 @@ public class Main {
                     a.toString()
             );
             
-        } catch (ClassNotFoundException e) {
-            System.err.println("Class " + args[0] + "not found.\n");
-        } catch (NoSuchMethodException ex) {
+        } catch (
+            InstantiationException |
+            IllegalAccessException |
+            IllegalArgumentException |
+            ClassNotFoundException |
+            NoSuchMethodException |
+            InvocationTargetException ex
+        )
+        {
             System.err.println(ex);
+            return;
         }
         
         IVehicle v1 = new Moped("🚗", 0);
@@ -100,6 +108,19 @@ public class Main {
         System.out.println(v4.getClass().getCanonicalName());
         System.out.println(v4);
         
-    }
-    
+        try {
+            var oout = new PrintWriter(System.out);
+            VehicleAnalyzer.writeVehicle(v4, oout);
+            var v5 = VehicleAnalyzer.readVehicle(
+                    new InputStreamReader(System.in)
+            );
+            System.out.println("\n" + v5);
+        } catch (
+                IOException |
+                DuplicateModelNameException ex
+        ) {
+            System.err.println(ex);
+            return;
+        }
+    }   
 }

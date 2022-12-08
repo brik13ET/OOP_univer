@@ -131,18 +131,35 @@ public class Moped implements IVehicle
 
     @Override
     public void addModel(String title, double cost) throws DuplicateModelNameException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        if (cost < 0)
+            throw new ModelPriceOutOfBoundsException();
+        for (Model model : store) {
+            if (model.Title.equals(title))
+                throw new DuplicateModelNameException();
+        }
+        store.add(new Model(title, cost));
     }
 
     @Override
     public void delModel(String title) throws NoSuchModelNameException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        for (Model model : store) {
+            if (model.Title.equals(title)) {
+                store.remove(model);
+                return;
+            }
+        }
+        throw new NoSuchModelNameException();
     }
     
     @Override
     public Object clone() throws CloneNotSupportedException
     {
-        return super.clone();
+        var ret = (Moped)super.clone();
+        ret.store = new LinkedList<Model>();
+        for (Model model : store) {
+            ret.store.add(new Model(model.Title, model.Cost));
+        }
+        return ret;
     }
     
     @Override
