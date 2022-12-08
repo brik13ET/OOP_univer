@@ -23,10 +23,13 @@ public class ThreadCostOutput extends Thread {
     @Override
     public void run()
     {
-        var cm = v.getModelsCost();
-        for (double d : cm)
-        {
-            System.out.println("C:\t" + d);
+        synchronized (v){
+            var cm = v.getModelsCost();
+            for (double d : cm)
+            {
+                System.out.println("C:\t" + d);
+            }
+            v.notifyAll();
         }
     }
         

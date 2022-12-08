@@ -4,8 +4,9 @@
  */
 package Threads;
 
-import Vehicle.IVehicle;
-import java.io.PrintStream;
+import Vehicle.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -14,22 +15,23 @@ import java.io.PrintStream;
 public class RunnablePrintCost implements Runnable
 {
     private TransportSynchronizer t;
-    private IVehicle _v;
+    private int count = 0;
     
-    public RunnablePrintCost(IVehicle v, TransportSynchronizer _t)
+    public RunnablePrintCost(TransportSynchronizer _t, int _count)
     {
         t = _t;
-        _v = v;
+        count = _count;
     }
     
     @Override
     public void run()
     {
-        var cm = _v.getModelsCost();
-        for (double d : cm) {
-            var w = (PrintStream)t.WaitForQueue(this);
-            w.println(d);
-            t.LeaveQueue(this);
-        }
+        for (int i = 0; i < count; i++)
+            try {
+                t.printPrice();
+            } catch (InterruptedException ex) {
+                System.err.println(ex);
+                return;
+            }
     }
 }

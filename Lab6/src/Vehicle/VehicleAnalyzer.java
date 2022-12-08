@@ -18,6 +18,9 @@ import java.io.UnsupportedEncodingException;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -109,46 +112,57 @@ public class VehicleAnalyzer {
             throws IOException
     {
         PrintWriter out = new PrintWriter(oout);
-        out.println(v.getClass().getName());
-        out.println(v.getManufacture());
         int cnt = v.getModelCount();
-        out.println(cnt);
+        out.printf("%s\n%s\n%d\n", v.getClass().getName(),v.getManufacture(),cnt);
         String[] titles = v.getModelsTitle();
         var costs = v.getModelsCost();
         for (int i = 0; i < cnt; i++)
         {
-            out.println(titles[i]);
-            out.println(costs[i]);
+            out.printf("%s\n%f\n",titles[i],costs[i]);
         }
         out.flush();
     }
     
     public static IVehicle readVehicle (Reader iin)
-            throws IOException, DuplicateModelNameException
+            throws
+                IOException,
+                DuplicateModelNameException
     {
-        BufferedReader in = new BufferedReader(iin);
-        String cls = in.readLine();
-        String manuf = in.readLine();
+        Scanner sc = new Scanner(iin);
+        sc.useDelimiter("\n");
+        String cls = sc.nextLine();
+        String manuf = sc.nextLine();
         IVehicle ret;
-        switch (cls)
+        
+        try {
+            Class c = Class.forName(cls);
+            Constructor co = c.getConstructor(String.class, int.class);
+            ret = (IVehicle)co.newInstance(manuf, 0);
+        } catch (
+            InstantiationException |
+            IllegalAccessException |
+            IllegalArgumentException |
+            ClassNotFoundException |
+            NoSuchMethodException |
+            InvocationTargetException ex
+        )
         {
-            case "Vehicle.Automobile":
-                ret = new Automobile(manuf, 0);
-                break;
-            case "Vehicle.Motocycle":
-                ret = new Motocycle(manuf, 0);
-                break;
-            default: throw new IOException(
-                    "Object type does not match (\"" + cls + "\"). \n");
+            System.err.println(ex);
+            return null;
         }
-        int count = Integer.parseInt(in.readLine());
+        
+        int count = sc.nextInt();
+        sc.nextLine();
+        
         for (int i = 0; i < count; i++)
         {
-            String mname = in.readLine();
-            String mcost_str = in.readLine();
+            String mname = sc.nextLine();
+            var mcost = sc.nextDouble();
+            sc.nextLine();
             
-            ret.addModel(mname, Integer.parseInt(mcost_str));
+            ret.addModel(mname, mcost);
         }
+        sc.close();
         return ret;
     }
     
@@ -160,17 +174,15 @@ public class VehicleAnalyzer {
                     classReflect.getConstructor(String.class, int.class);
             Object ret = constr.newInstance(mark, size);
             return (IVehicle)ret;
-        } catch (NoSuchMethodException ex) {
-            return null;
-        } catch (SecurityException ex) {
-            return null;
-        } catch (InstantiationException ex) {
-            return null;
-        } catch (IllegalAccessException ex) {
-            return null;
-        } catch (IllegalArgumentException ex) {
-            return null;
-        } catch (InvocationTargetException ex) {
+        } catch (
+            NoSuchMethodException |
+            SecurityException |
+            InstantiationException |
+            IllegalAccessException |
+            IllegalArgumentException |
+            InvocationTargetException ex
+        )
+        {
             return null;
         }
     }

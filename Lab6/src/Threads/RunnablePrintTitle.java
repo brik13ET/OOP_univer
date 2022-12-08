@@ -5,7 +5,6 @@
 package Threads;
 
 import Vehicle.IVehicle;
-import java.io.PrintStream;
 
 /**
  *
@@ -14,22 +13,23 @@ import java.io.PrintStream;
 public class RunnablePrintTitle implements Runnable
 {
     private TransportSynchronizer t;
-    private IVehicle _v;
+    private int count = 0;
     
-    public RunnablePrintTitle(IVehicle v, TransportSynchronizer _t)
+    public RunnablePrintTitle(TransportSynchronizer _t, int _count)
     {
         t = _t;
-        _v = v;
+        count = _count;
     }
     
     @Override
     public void run()
     {
-        var cm = _v.getModelsTitle();
-        for (String d : cm) {
-            var w = (PrintStream)t.WaitForQueue(this);
-            w.print(d + "\t");
-            t.LeaveQueue(this);
-        }
+        for (int i = 0; i < count; i++)
+            try {
+                t.printModel();
+            } catch (InterruptedException ex) {
+                System.err.println(ex);
+                return;
+            }
     }
 }
