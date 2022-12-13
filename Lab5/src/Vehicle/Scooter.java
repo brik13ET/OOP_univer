@@ -16,7 +16,7 @@ public class Scooter implements IVehicle
 {
     String Mark;
     
-    HashMap<String,Double> store;
+    private HashMap<String,Double> store;
     
     public Scooter(String mark, int count)
     {

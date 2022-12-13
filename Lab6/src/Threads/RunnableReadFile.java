@@ -34,8 +34,8 @@ public class RunnableReadFile implements Runnable {
             f = new BufferedReader(file);
             var mark = f.readLine();
             var vehicle = new Automobile(mark, 0);
-            q.put(vehicle);
-        } catch (IOException | InterruptedException ex) {
+            q.add(vehicle);
+        } catch (Exception ex) {
             System.err.println(ex);
             return;
         }

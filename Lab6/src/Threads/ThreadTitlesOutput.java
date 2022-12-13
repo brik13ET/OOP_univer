@@ -23,13 +23,10 @@ public class ThreadTitlesOutput extends Thread {
     @Override
     public void run()
     {
-        synchronized (v){
-            var tm = v.getModelsTitle();
-            for (String d : tm)
-            {
-                System.out.println("T:\t"+d);
-            }
-            v.notifyAll();
+        var tm = v.getModelsTitle();
+        for (String d : tm)
+        {
+            System.out.println("T:\t"+d);
         }
     }
 }
