@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class Quadricycle implements IVehicle {
 
     private String mark;
-    ArrayList<Model> store;
+    private ArrayList<Model> store;
     
     public Quadricycle(String mark, int count)
     {
@@ -125,8 +125,6 @@ public class Quadricycle implements IVehicle {
         return store.size();
     }
 
-    // TODO
-    
     @Override
     public void addModel(String title, double cost) throws DuplicateModelNameException {
         if (cost < 0)

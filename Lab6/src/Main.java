@@ -28,20 +28,12 @@ public class Main {
             ThreadCostOutput tc = new ThreadCostOutput(m);
 
             tt.setPriority(1);
-            tc.setPriority(10);
+            tc.setPriority(1);
 
             System.out.println("thread \"print cost\" prior: " +tc.getPriority() + "\nthread \"print titles\" prior: " + tt.getPriority());
 
-            if (tc.getPriority() > tt.getPriority()){
-                tc.start();
-                tt.start();
-            }
-            else
-            {
-                tt.start();
-                tc.start();
-            }
-            while(tc.isAlive() || tt.isAlive());
+            tc.start();
+            tt.start();
         }
         // 2
         if (false)
@@ -91,7 +83,7 @@ public class Main {
         // 5
         if (false)
         {
-            var q = new ArrayBlockingQueue(5);
+            var q = new ArrayBlockingQueue(2);
             
             var r1 = new RunnableReadFile("1.txt", q);
             var r2 = new RunnableReadFile("2.txt", q);
