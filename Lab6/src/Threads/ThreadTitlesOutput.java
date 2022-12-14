@@ -12,7 +12,7 @@ import Vehicle.IVehicle;
  * @author user0
  */
 public class ThreadTitlesOutput extends Thread {
-        IVehicle v;
+    private    IVehicle v;
     
     public ThreadTitlesOutput(IVehicle v)
     {

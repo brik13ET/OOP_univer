@@ -12,7 +12,7 @@ package Threads;
 import Vehicle.IVehicle;
 
 public class ThreadCostOutput extends Thread {
-    IVehicle v;
+    private IVehicle v;
     
     public ThreadCostOutput(IVehicle v)
     {

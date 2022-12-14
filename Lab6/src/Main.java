@@ -27,8 +27,8 @@ public class Main {
             ThreadTitlesOutput tt = new ThreadTitlesOutput(m);
             ThreadCostOutput tc = new ThreadCostOutput(m);
 
-            tt.setPriority(1);
-            tc.setPriority(1);
+            tt.setPriority(Thread.MAX_PRIORITY);
+            tc.setPriority(Thread.MIN_PRIORITY);
 
             System.out.println("thread \"print cost\" prior: " +tc.getPriority() + "\nthread \"print titles\" prior: " + tt.getPriority());
 

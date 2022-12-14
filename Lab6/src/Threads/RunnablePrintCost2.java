@@ -13,8 +13,8 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class RunnablePrintCost2 implements Runnable {
     
-    IVehicle v;
-    ReentrantLock lock;
+    private IVehicle v;
+    private ReentrantLock lock;
     
     public RunnablePrintCost2(IVehicle v, ReentrantLock lock)
     {
@@ -25,9 +25,15 @@ public class RunnablePrintCost2 implements Runnable {
     @Override
     public void run() {
         lock.lock();
+        try
+        {
         for (var e : v.getModelsCost()) {
             System.out.println(e);
         }
-        lock.unlock();
+        }
+        finally
+        {
+            lock.unlock();
+        }
     }
 }
