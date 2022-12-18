@@ -2,50 +2,41 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package my.calculator;
+package CalcUI;
 
-import static javax.swing.JOptionPane.showMessageDialog;
-import java.awt.event.KeyEvent;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author user0
  */
 public class MainUI extends javax.swing.JFrame {
 
+    Double arg1;
+    Double arg2;
+    Double result;
+    
+    String buf = "";
+    
+    boolean hasDot = false;
+    
+    Operation op;
+    private enum Operation
+    {
+        Plus,
+        Minus,
+        Mul,
+        Div,
+        Sqr,
+        Sqrt
+    }
+    
     /**
      * Creates new form MainUI
      */
     public MainUI() {
         initComponents();
     }
-
-    Operator op;
-    
-    private enum Token
-    {
-        OperatorBinar,
-        Argument,
-        ArgumentDot,
-        
-    }
-    
-    private enum Operator
-    {
-        Plus,
-        Minus,
-        Mul,
-        Div,
-        Sqrt,
-        Sqr
-    }
-    
-    Token Current = Token.Argument;
-    
-    double result = 0;
-    double preview = 0;
-    String arg = "0";
-    String prev = "=0";
-    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -79,8 +70,6 @@ public class MainUI extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Calculator");
         setBounds(new java.awt.Rectangle(300, 300, 264, 308));
-        setMaximumSize(new java.awt.Dimension(4000, 4000));
-        setPreferredSize(null);
         setResizable(false);
         setSize(new java.awt.Dimension(264, 304));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -90,9 +79,6 @@ public class MainUI extends javax.swing.JFrame {
         jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 jTextField1KeyPressed(evt);
-            }
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                jTextField1KeyTyped(evt);
             }
         });
         getContentPane().add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 240, 48));
@@ -227,6 +213,11 @@ public class MainUI extends javax.swing.JFrame {
 
         jButton15.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jButton15.setText(",");
+        jButton15.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton15ActionPerformed(evt);
+            }
+        });
         getContentPane().add(jButton15, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 250, 57, 50));
 
         jButton16.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
@@ -302,135 +293,13 @@ public class MainUI extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void process_input(char c)
-    {
-        switch (c)
-        {
-            case '+':
-            case '-':
-            case '*':
-            case '/':
-                if (Current == Token.Argument || Current == Token.ArgumentDot)
-                {
-                    prev = this.jTextField1.getText();
-                    double argd = Double.parseDouble(arg);
-                    if (op == null)
-                    {
-                        preview = result;
-                        
-                    }
-                    else
-                    switch (op)
-                    {
-                        case Plus:
-                            preview = result + argd;
-                            break;
-                        case Minus:
-                            preview = result - argd;
-                            break;
-                        case Mul:
-                            preview = result * argd;
-                            break;
-                        case Div:
-                            if (argd != 0)
-                                preview = result / argd;
-                            else
-                                showMessageDialog(null, "деление для 0");
-                            break;
-                        case Sqrt:
-                            preview = Math.pow(result,2f);
-                            break;
-                        case Sqr:
-                            if (result >= 0)
-                                preview = Math.pow(result,1/2f);
-                            else
-                                showMessageDialog(
-                                        null,
-                                        "так то можно брать корень от " + 
-                                        String.format("%.5f", result) + 
-                                        "но низя по тз(("
-                                );
-                            break;
-                    }
-                    
-                    Current = Token.OperatorBinar;
-                    switch (c)
-                    {
-                        case '+':
-                            op = Operator.Plus;
-                            break;
-                        case '-':
-                            op = Operator.Minus;
-                            break;
-                        case '*':
-                            op = Operator.Mul;
-                            break;
-                        case '/':
-                            op = Operator.Div;
-                            break;
-                        case '\\':
-                            op = Operator.Sqrt;
-                            break;
-                        case '^':
-                            op = Operator.Sqr;
-                            break;
-                    }
-                    this.jTextField1.setText(prev + c+"\t\t= " + preview );
-                }
-                break;
-            case '0':
-            case '1':
-            case '2':
-            case '3':
-            case '4':
-            case '5':
-            case '6':
-            case '7':
-            case '8':
-            case '9':
-                if (Current == Token.ArgumentDot)
-                {
-                    arg += c;
-                    prev += c;
-                }
-            case '.':
-            case ',':
-                if (Current == Token.Argument)
-                {
-                    arg += c;
-                    prev += c;
-                    Current = Token.ArgumentDot;
-                    break;
-                }
-                break;
-            case '=':
-            case '\n':
-                // calculate
-                // calculate
-        }
-    }
-    
-    private void jTextField1KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyTyped
-        char c = evt.getKeyChar();
-        process_input(c);
-    }//GEN-LAST:event_jTextField1KeyTyped
     // Key 1
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-        this.jTextField1.setText(this.jTextField1.getText() + "1");
+
     }//GEN-LAST:event_jButton8ActionPerformed
 
     private void jTextField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyPressed
-        
-        switch (evt.getKeyCode())
-        {
-            case KeyEvent.VK_BACK_SPACE:
-                // backspace
-                break;
-            case KeyEvent.VK_ESCAPE:
-                // clear
-                break;
-        }
+
     }//GEN-LAST:event_jTextField1KeyPressed
 
     // Key 0
@@ -469,6 +338,21 @@ public class MainUI extends javax.swing.JFrame {
     private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton16ActionPerformed
+    // Key Dot
+    private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
+        if (this.hasDot)
+        {
+            JOptionPane.showMessageDialog(
+                    rootPane,
+                    "Cannot type dot");
+        }
+        else
+        {
+            this.buf += ".";
+            this.jTextField1.setText(buf);
+            this.hasDot = true;
+        }
+    }//GEN-LAST:event_jButton15ActionPerformed
 
     /**
      * @param args the command line arguments
