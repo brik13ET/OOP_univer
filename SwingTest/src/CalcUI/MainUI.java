@@ -5,22 +5,25 @@
 package CalcUI;
 
 import javax.swing.JOptionPane;
-
+import java.lang.ArithmeticException;
+import static java.lang.Math.sqrt;
+import static java.lang.Math.pow;
+import static java.lang.Double.NaN;
+import static java.lang.Double.isNaN;
 /**
  *
  * @author user0
  */
 public class MainUI extends javax.swing.JFrame {
 
-    Double arg1;
+    Double arg1 = 0.0;
     Double arg2;
-    Double result;
     
     String buf = "";
     
     boolean hasDot = false;
-    
-    Operation op;
+    boolean clear = false;
+    Operation op = Operation.Equ;
     private enum Operation
     {
         Plus,
@@ -28,8 +31,59 @@ public class MainUI extends javax.swing.JFrame {
         Mul,
         Div,
         Sqr,
-        Sqrt
+        Sqrt,
+        Equ
     }
+    
+    private void calc()
+    {
+        switch (op)
+        {
+            case Plus -> 
+            {
+                arg1 = arg1 + arg2;
+            }
+            case Minus ->
+            {
+                arg1 = arg1 - arg2;
+                
+            }
+            case Mul ->
+            {
+                arg1 = arg1 * arg2;
+                
+            }
+            case Div ->
+            {
+                if (arg2 == 0)
+                    throw new ArithmeticException("Divide by zero");
+                arg1 = arg1 / arg2;
+                
+            }
+            
+            case Sqr ->
+            {
+                arg1 = arg2 * arg2;
+            }
+            case Sqrt -> 
+            {
+                if (arg2 < 0)
+                    throw new ArithmeticException("Complex number result");
+                
+                arg1 = sqrt(arg2);
+            
+            }
+            
+            case Equ ->
+            {
+                arg1 = arg2;
+            }
+        }
+        op = Operation.Equ;
+        buf = Double.toString(arg1);
+        jTextField1.setText(buf);
+    }
+    
     
     /**
      * Creates new form MainUI
@@ -263,84 +317,182 @@ public class MainUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
     // Key Clear
     private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton17ActionPerformed
-        // TODO add your handling code here:
+        arg1 = .0;
+        arg2 = .0;
+        op = Operation.Equ;
+        buf = "0";
+        jTextField1.setText(buf);
+        hasDot = false;
+        clear = true;
     }//GEN-LAST:event_jButton17ActionPerformed
     // Key Equals
     private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton20ActionPerformed
-        // TODO add your handling code here:
+        arg2 = Double.valueOf(buf);
+        calc();
+        op = Operation.Equ;
+        clear = true;
     }//GEN-LAST:event_jButton20ActionPerformed
     // Key SQRT
     private void jButton19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton19ActionPerformed
-        // TODO add your handling code here:
+        arg2 = Double.valueOf(jTextField1.getText());
+        if (op != Operation.Equ)
+        {   
+            calc();
+            arg2 = arg1;
+        }
+        op = Operation.Sqrt;
+        calc();
+        clear = true;
     }//GEN-LAST:event_jButton19ActionPerformed
     // Key Plus
     private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
-        // TODO add your handling code here:
+        arg2 = Double.valueOf(jTextField1.getText());
+        calc();
+        op = Operation.Plus;
+        clear = true;
     }//GEN-LAST:event_jButton13ActionPerformed
     // Key Minus
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
-        // TODO add your handling code here:
+        arg2 = Double.valueOf(jTextField1.getText());
+        calc();
+        op = Operation.Minus;
+        clear = true;
     }//GEN-LAST:event_jButton11ActionPerformed
     // Key Multiply
     private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
-        // TODO add your handling code here:
+        arg2 = Double.valueOf(jTextField1.getText());
+        calc();
+        op = Operation.Mul;
+        clear = true;
     }//GEN-LAST:event_jButton12ActionPerformed
     // Key Divide
     private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
-        // TODO add your handling code here:
+        arg2 = Double.valueOf(jTextField1.getText());
+        calc();
+        op = Operation.Div;
+        clear = true;
     }//GEN-LAST:event_jButton14ActionPerformed
     // Key 7
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+        if (clear)
+        {
+            clear = false;
+            buf = "";
+        }
+        buf += '7';
+        jTextField1.setText(buf);
     }//GEN-LAST:event_jButton1ActionPerformed
     // Key 1
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-
+        if (clear)
+        {
+            clear = false;
+            buf = "";
+        }
+        buf += '1';
+        jTextField1.setText(buf);
     }//GEN-LAST:event_jButton8ActionPerformed
 
     private void jTextField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyPressed
-
+        buf += evt.getKeyChar();
+        jTextField1.setText(buf);
     }//GEN-LAST:event_jTextField1KeyPressed
 
     // Key 0
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        
+        if (clear)
+        {
+            clear = false;
+            buf = "";
+        }
+        buf += '0';
+        jTextField1.setText(buf);
     }//GEN-LAST:event_jButton6ActionPerformed
     // Key 2
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        // TODO add your handling code here:
+        if (clear)
+        {
+            clear = false;
+            buf = "";
+        }
+        buf += '2';
+        jTextField1.setText(buf);
     }//GEN-LAST:event_jButton5ActionPerformed
     // Key 3
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
-        // TODO add your handling code here:
+        if (clear)
+        {
+            clear = false;
+            buf = "";
+        }
+        buf += '3';
+        jTextField1.setText(buf);
     }//GEN-LAST:event_jButton10ActionPerformed
     // Key 4
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        // TODO add your handling code here:
+        if (clear)
+        {
+            clear = false;
+            buf = "";
+        }
+        buf += '4';
+        jTextField1.setText(buf);
     }//GEN-LAST:event_jButton4ActionPerformed
     // Key 5
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-        // TODO add your handling code here:
+        if (clear)
+        {
+            clear = false;
+            buf = "";
+        }
+        buf += '5';
+        jTextField1.setText(buf);
     }//GEN-LAST:event_jButton7ActionPerformed
     // Key 6
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
-        // TODO add your handling code here:
+        if (clear)
+        {
+            clear = false;
+            buf = "";
+        }
+        buf += '6';
+        jTextField1.setText(buf);
     }//GEN-LAST:event_jButton9ActionPerformed
     // Key 8
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
+        if (clear)
+        {
+            clear = false;
+            buf = "";
+        }
+        buf += '8';
+        jTextField1.setText(buf);
     }//GEN-LAST:event_jButton2ActionPerformed
     // Key 9
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
+        if (clear)
+        {
+            clear = false;
+            buf = "";
+        }
+        buf += '9';
+        jTextField1.setText(buf);
     }//GEN-LAST:event_jButton3ActionPerformed
     // Key SQR
     private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
-        // TODO add your handling code here:
+        arg2 = Double.valueOf(jTextField1.getText());
+        if (op != Operation.Equ)
+        {            
+            calc();
+            arg2 = arg1;
+        }
+        op = Operation.Sqr;
+        calc();
+        clear = true;
     }//GEN-LAST:event_jButton16ActionPerformed
     // Key Dot
     private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
-        if (this.hasDot)
+        if (hasDot)
         {
             JOptionPane.showMessageDialog(
                     rootPane,
