@@ -4,12 +4,14 @@
  */
 package CalcUI;
 
-import javax.swing.JOptionPane;
+
 import java.lang.ArithmeticException;
+import static javax.swing.JOptionPane.showMessageDialog;
 import static java.lang.Math.sqrt;
 import static java.lang.Math.pow;
 import static java.lang.Double.NaN;
 import static java.lang.Double.isNaN;
+
 /**
  *
  * @author user0
@@ -18,14 +20,15 @@ public class MainUI extends javax.swing.JFrame {
 
     Double arg1 = 0.0;
     Double arg2;
-    
+
     String buf = "";
-    
+
     boolean hasDot = false;
     boolean clear = false;
+    boolean wantedOp = false;
     Operation op = Operation.Equ;
-    private enum Operation
-    {
+
+    private enum Operation {
         Plus,
         Minus,
         Mul,
@@ -34,63 +37,65 @@ public class MainUI extends javax.swing.JFrame {
         Sqrt,
         Equ
     }
-    
-    private void calc()
-    {
-        switch (op)
+
+    private void calc() {
+        try
         {
-            case Plus -> 
-            {
+        switch (op) {
+            case Plus -> {
                 arg1 = arg1 + arg2;
             }
-            case Minus ->
-            {
+            case Minus -> {
                 arg1 = arg1 - arg2;
-                
+
             }
-            case Mul ->
-            {
+            case Mul -> {
                 arg1 = arg1 * arg2;
-                
+
             }
-            case Div ->
-            {
-                if (arg2 == 0)
+            case Div -> {
+                if (arg2 == 0) {
                     throw new ArithmeticException("Divide by zero");
+                }
                 arg1 = arg1 / arg2;
-                
+
             }
-            
-            case Sqr ->
-            {
+
+            case Sqr -> {
                 arg1 = arg2 * arg2;
             }
-            case Sqrt -> 
-            {
-                if (arg2 < 0)
+            case Sqrt -> {
+                if (arg2 < 0) {
                     throw new ArithmeticException("Complex number result");
-                
+                }
+
                 arg1 = sqrt(arg2);
-            
+
             }
-            
-            case Equ ->
-            {
+
+            case Equ -> {
                 arg1 = arg2;
             }
         }
         op = Operation.Equ;
         buf = Double.toString(arg1);
         jTextField1.setText(buf);
+        hasDot = true;
+        wantedOp = false;
+        } catch (ArithmeticException e)
+        {
+            showMessageDialog(this, e.getMessage());
+            clear = false;
+        }
     }
-    
-    
+
     /**
      * Creates new form MainUI
      */
     public MainUI() {
         initComponents();
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -128,8 +133,9 @@ public class MainUI extends javax.swing.JFrame {
         setSize(new java.awt.Dimension(264, 304));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        jTextField1.setEditable(false);
         jTextField1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jTextField1.setText("=0");
+        jTextField1.setText("0");
         jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 jTextField1KeyPressed(evt);
@@ -324,186 +330,288 @@ public class MainUI extends javax.swing.JFrame {
         jTextField1.setText(buf);
         hasDot = false;
         clear = true;
+        jTextField1.requestFocus();
     }//GEN-LAST:event_jButton17ActionPerformed
     // Key Equals
     private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton20ActionPerformed
-        arg2 = Double.valueOf(buf);
+        if (buf.length() > 0)
+            arg2 = Double.valueOf(buf);
+        else
+            arg2 = 0.0;
         calc();
         op = Operation.Equ;
         clear = true;
+        jTextField1.requestFocus();
     }//GEN-LAST:event_jButton20ActionPerformed
     // Key SQRT
     private void jButton19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton19ActionPerformed
         arg2 = Double.valueOf(jTextField1.getText());
-        if (op != Operation.Equ)
-        {   
+        if (op != Operation.Equ) {
             calc();
             arg2 = arg1;
         }
         op = Operation.Sqrt;
         calc();
         clear = true;
+        jTextField1.requestFocus();
     }//GEN-LAST:event_jButton19ActionPerformed
     // Key Plus
     private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
         arg2 = Double.valueOf(jTextField1.getText());
-        calc();
+        if (!wantedOp)
+            calc();
         op = Operation.Plus;
         clear = true;
+        jTextField1.requestFocus();
+        wantedOp = true;
     }//GEN-LAST:event_jButton13ActionPerformed
     // Key Minus
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
         arg2 = Double.valueOf(jTextField1.getText());
-        calc();
+        if (!wantedOp)
+            calc();
         op = Operation.Minus;
         clear = true;
+        jTextField1.requestFocus();
+        wantedOp = true;
     }//GEN-LAST:event_jButton11ActionPerformed
     // Key Multiply
     private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
         arg2 = Double.valueOf(jTextField1.getText());
-        calc();
+        if (!wantedOp)
+            calc();
         op = Operation.Mul;
         clear = true;
+        jTextField1.requestFocus();
+        wantedOp = true;
     }//GEN-LAST:event_jButton12ActionPerformed
     // Key Divide
     private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
         arg2 = Double.valueOf(jTextField1.getText());
-        calc();
+        if (!wantedOp)
+            calc();
         op = Operation.Div;
         clear = true;
+        jTextField1.requestFocus();
+        wantedOp = true;
     }//GEN-LAST:event_jButton14ActionPerformed
     // Key 7
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if (clear)
-        {
+        if (clear) {
             clear = false;
             buf = "";
+            hasDot = false;
         }
         buf += '7';
         jTextField1.setText(buf);
+        
+        jTextField1.requestFocus();
     }//GEN-LAST:event_jButton1ActionPerformed
     // Key 1
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-        if (clear)
-        {
+        if (clear) {
             clear = false;
             buf = "";
+            hasDot = false;
         }
         buf += '1';
         jTextField1.setText(buf);
+        jTextField1.requestFocus();
     }//GEN-LAST:event_jButton8ActionPerformed
-
+    // KB
     private void jTextField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyPressed
-        buf += evt.getKeyChar();
+        char ch = evt.getKeyChar();
+        switch (ch)
+        {
+            case '0' -> 
+            {
+                jButton6ActionPerformed(null);
+            }
+            case '1' ->
+            {
+                jButton8ActionPerformed(null);
+            }
+            case '2' ->
+            {
+                jButton5ActionPerformed(null);
+            }
+            case '3' ->
+            {
+                jButton10ActionPerformed(null);
+            }
+            case '4' ->
+            {
+                jButton4ActionPerformed(null);
+            }
+            case '5' ->
+            {
+                jButton7ActionPerformed(null);
+            }
+            case '6' ->
+            {
+                jButton9ActionPerformed(null);
+            }
+            case '7' ->
+            {
+                jButton1ActionPerformed(null);
+            }
+            case '8' ->
+            {
+                jButton2ActionPerformed(null);
+            }
+            case '9' ->
+            {
+                jButton3ActionPerformed(null);
+            }
+            case '.' -> {
+                jButton15ActionPerformed(null);
+            }
+            case ',' -> {
+                jButton15ActionPerformed(null);
+            }
+            case '+' -> {
+                jButton13ActionPerformed(null);
+            }
+            case '-' -> {
+                jButton11ActionPerformed(null);
+            }
+            //
+            case '*' -> {
+                jButton12ActionPerformed(null);
+            }
+            case '/' -> {
+                jButton14ActionPerformed(null);
+            }
+            case '\\' -> {
+                jButton19ActionPerformed(null);
+            }
+            case '#' -> {
+                jButton16ActionPerformed(null);
+            }
+            case '=' -> {
+                jButton20ActionPerformed(null);
+            }
+            case '\n' -> {
+                jButton20ActionPerformed(null);
+            }
+            case 27 -> {
+                jButton17ActionPerformed(null);
+            } // Escape key
+        }
         jTextField1.setText(buf);
     }//GEN-LAST:event_jTextField1KeyPressed
-
     // Key 0
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        if (clear)
-        {
+        if (clear) {
             clear = false;
             buf = "";
+            hasDot = false;
         }
         buf += '0';
         jTextField1.setText(buf);
+        jTextField1.requestFocus();
     }//GEN-LAST:event_jButton6ActionPerformed
     // Key 2
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        if (clear)
-        {
+        if (clear) {
             clear = false;
             buf = "";
+            hasDot = false;
         }
         buf += '2';
         jTextField1.setText(buf);
+        jTextField1.requestFocus();
     }//GEN-LAST:event_jButton5ActionPerformed
     // Key 3
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
-        if (clear)
-        {
+        if (clear) {
             clear = false;
             buf = "";
+            hasDot = false;
         }
         buf += '3';
         jTextField1.setText(buf);
+        jTextField1.requestFocus();
     }//GEN-LAST:event_jButton10ActionPerformed
     // Key 4
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        if (clear)
-        {
+        if (clear) {
             clear = false;
             buf = "";
+            hasDot = false;
         }
         buf += '4';
         jTextField1.setText(buf);
+        jTextField1.requestFocus();
     }//GEN-LAST:event_jButton4ActionPerformed
     // Key 5
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-        if (clear)
-        {
+        if (clear) {
             clear = false;
             buf = "";
+            hasDot = false;
         }
         buf += '5';
         jTextField1.setText(buf);
+        jTextField1.requestFocus();
     }//GEN-LAST:event_jButton7ActionPerformed
     // Key 6
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
-        if (clear)
-        {
+        if (clear) {
             clear = false;
             buf = "";
+            hasDot = false;
         }
         buf += '6';
         jTextField1.setText(buf);
+        jTextField1.requestFocus();
     }//GEN-LAST:event_jButton9ActionPerformed
     // Key 8
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        if (clear)
-        {
+        if (clear) {
             clear = false;
             buf = "";
+            hasDot = false;
         }
         buf += '8';
         jTextField1.setText(buf);
+        jTextField1.requestFocus();
     }//GEN-LAST:event_jButton2ActionPerformed
     // Key 9
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        if (clear)
-        {
+        if (clear) {
             clear = false;
             buf = "";
+            hasDot = false;
         }
         buf += '9';
         jTextField1.setText(buf);
+        jTextField1.requestFocus();
     }//GEN-LAST:event_jButton3ActionPerformed
     // Key SQR
     private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
         arg2 = Double.valueOf(jTextField1.getText());
-        if (op != Operation.Equ)
-        {            
+        if (op != Operation.Equ) {
             calc();
             arg2 = arg1;
         }
         op = Operation.Sqr;
         calc();
         clear = true;
+        jTextField1.requestFocus();
     }//GEN-LAST:event_jButton16ActionPerformed
     // Key Dot
     private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
-        if (hasDot)
-        {
-            JOptionPane.showMessageDialog(
+        if (hasDot) {
+            showMessageDialog(
                     rootPane,
                     "Cannot type dot");
-        }
-        else
-        {
+        } else {
             this.buf += ".";
             this.jTextField1.setText(buf);
             this.hasDot = true;
         }
+        jTextField1.requestFocus();
     }//GEN-LAST:event_jButton15ActionPerformed
 
     /**
@@ -516,21 +624,11 @@ public class MainUI extends javax.swing.JFrame {
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
         try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                System.out.println(info.getName());
-                if ("Metal".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MainUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MainUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MainUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(MainUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            javax.swing.UIManager.setLookAndFeel(javax.swing.UIManager.getSystemLookAndFeelClassName());
+            
+            //javax.swing.UIManager.setLookAndFeel();
+        } catch (ClassNotFoundException| InstantiationException|IllegalAccessException|javax.swing.UnsupportedLookAndFeelException ex) {
+            System.err.println(ex.getMessage());
         }
         //</editor-fold>
 
